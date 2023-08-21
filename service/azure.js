@@ -19,24 +19,31 @@ exports.azureImgUpload = async (file) => {
         AZURE_STORAGE_CONNECTION_STRING
     );
 
+    // var containerName
+    // var data
+    // var blobContentType
     // connect with exesting container
-    const containerName = 'brochure';
-    const containerClient = await blobServiceClient.getContainerClient(containerName)
+    if (file.fieldname === 'brochure') {
+        data = Buffer.from("BASE-64-ENCODED-PDF", "base64");
+    }
+
+
+    const containerClient = await blobServiceClient.getContainerClient(file.fieldname)
 
     // insert file in to the container
-    const file_name = "test.pdf";
+    // const file_name = "test.pdf";
 
-    const blockBlobClient = containerClient.getBlockBlobClient(file_name);
+    const blockBlobClient = containerClient.getBlockBlobClient(file.originalname);
 
     // const uploadeBlobResponse = await blockBlobClient.upload(file_name, file_name.length)
 
 
-    const data = Buffer.from("BASE-64-ENCODED-PDF", "base64");
+
 
     const responce = await blockBlobClient.uploadData(data, {
         blobHTTPHeaders: {
-            blobContentType: "application/pdf",
+            blobContentType: file.mimetype,
         },
     })
-    console.log("res", responce)
+    return responce
 }

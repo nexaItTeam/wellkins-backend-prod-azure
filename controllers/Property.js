@@ -260,12 +260,17 @@ exports.getPropertyImgById = async (req, res) => {
 
 exports.uploadeImg = async (req, res) => {
     try {
+        const id = parseInt(req.params.id)
         const file = req.file
 
         await azureImgUpload(file).then((resp) => {
-            console.log("resp", resp)
+            res.status(200).json({
+                message: "Success upload",
+            })
         }).catch((error) => {
-            console.log("error", error)
+            return res.status(400).json({
+                message: "failed to upload"
+            })
         })
     } catch (error) {
         console.log(error)

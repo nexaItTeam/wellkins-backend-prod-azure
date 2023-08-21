@@ -10,7 +10,7 @@ exports.azureImgUpload = async (file) => {
 
     if (!AZURE_STORAGE_CONNECTION_STRING) {
         throw Error('Azure Storage Connection string not found');
-    } else { 
+    } else {
         console.log("connect with azure")
     }
 
@@ -20,15 +20,23 @@ exports.azureImgUpload = async (file) => {
     );
 
     // connect with exesting container
-    const containerName = "brochure";
+    const containerName = 'brochure';
     const containerClient = await blobServiceClient.getContainerClient(containerName)
 
     // insert file in to the container
-    const file_name = "test.txt"
+    const file_name = "test.pdf";
 
     const blockBlobClient = containerClient.getBlockBlobClient(file_name);
 
     // const uploadeBlobResponse = await blockBlobClient.upload(file_name, file_name.length)
 
-    return blockBlobClient.upload(file_name, file_name.length).promise()
+
+    const data = Buffer.from("BASE-64-ENCODED-PDF", "base64");
+
+    const responce = await blockBlobClient.uploadData(data, {
+        blobHTTPHeaders: {
+            blobContentType: "application/pdf",
+        },
+    })
+    console.log("res", responce)
 }

@@ -42,6 +42,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'desc'
         },
+        brocher: {
+            type: DataTypes.STRING,
+            field: 'brocher'
+        },
         isDelete: {
             type: DataTypes.BOOLEAN,
             field: 'isDelete',

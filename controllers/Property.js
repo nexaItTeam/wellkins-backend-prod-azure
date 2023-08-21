@@ -261,9 +261,14 @@ exports.getPropertyImgById = async (req, res) => {
 exports.uploadeImg = async (req, res) => {
     try {
         const file = req.file
-        const azure = await azureImgUpload(file)
-        console.log(azure)
+
+        await azureImgUpload(file).then((resp) => {
+            console.log("resp", resp)
+        }).catch((error) => {
+            console.log("error", error)
+        })
     } catch (error) {
+        console.log(error)
         res.status(500).json({
             message: "Server Error",
             error

@@ -19,6 +19,6 @@ router.post('/getImg', propertyControler.getPropertyImg)
 router.post('/getImgById', propertyControler.getPropertyImgById)
 router.post('/deleteimg', verify.validateToken, propertyControler.deleteImg)
 // router.post('/upload/:id', verify.validateToken, imgUpload.upload.single('property'), propertyControler.addPropImg)
-router.post('/upload', imgUpload.upload.single('property'), propertyControler.uploadeImg)
+router.post('/upload', imgUpload.upload.single('brochure'), propertyControler.uploadeImg)
 
 module.exports = router

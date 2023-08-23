@@ -23,6 +23,27 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.JSON,
             field: 'form_d'
         },
+        form_e: {
+            type: DataTypes.JSON,
+            field: 'form_e'
+        },
+        form_f: {
+            type: DataTypes.JSON,
+            field: 'form_f'
+        },
+        form_g: {
+            type: DataTypes.JSON,
+            field: 'form_g'
+        },
+        form_h: {
+            type: DataTypes.JSON,
+            field: 'form_h'
+        },
+        isDraft: {
+            type: DataTypes.BOOLEAN,
+            field: 'isDraft',
+            defaultValue: false,
+        },
         isDelete: {
             type: DataTypes.BOOLEAN,
             field: 'isDelete',

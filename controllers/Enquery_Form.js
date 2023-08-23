@@ -3,13 +3,11 @@ const model = require('../models')
 
 exports.getEnqForm = async (req, res) => {
     try {
-        var get_Enq_Form = await Enquiry_form.findAndCountAll({
+        var get_Enq_Form = await Enquiry_form.findOne({
             where: {
-                isDelete: false
-            },
-            order: [['createdAt', 'DESC']],
-            limit: req.body.limit,
-            offset: req.body.offset
+                isDelete: false,
+                client_id: req.body.client_id
+            }
         })
         if (!get_Enq_Form) {
             return res.status(404).json({
@@ -146,4 +144,8 @@ exports.deleteEnqForm = async (req, res) => {
             error
         })
     }
+}
+
+exports.uploadeDocument = async (req, res) => { 
+
 }

@@ -8,5 +8,6 @@ router.post('/post', verify.validateToken, EnqueryFormControler.addEnqForm)
 router.post('/update', verify.validateToken, EnqueryFormControler.updateEnqForm)
 router.post('/delete', verify.validateToken, EnqueryFormControler.deleteEnqForm)
 router.post('/find_client', verify.validateToken, EnqueryFormControler.find_client)
+router.post('/document', EnqueryFormControler.uploadeDocument)
 
 module.exports = router

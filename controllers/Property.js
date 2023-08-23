@@ -1,5 +1,6 @@
 const { Property, PropertyIMG } = require('../models')
-const { azureImgUpload } = require('../service/azure')
+const { azureUpload } = require('../service/azure')
+const db = require('../models');
 // const s3 = require('../service/s3')
 
 exports.getAllProperty = async (req, res) => {
@@ -233,42 +234,51 @@ exports.getPropertyImgById = async (req, res) => {
     }
 }
 
-// exports.addPropImg = async (req, res) => {
-//     try {
-//         const id = parseInt(req.params.id)
-//         const file = req.file
-//         const result = await s3.imageUpload(file)
-//         var temp = {
-//             "prop_id": id,
-//             "property_img": result.Key,
-//             "img_type": req.body.img_type
-//         }
-//         var upload_img = await PropertyIMG.create(temp)
-//         if (upload_img) {
-//             res.status(200).json({
-//                 message: "Success upload",
-//             })
-//         }
-//     } catch (error) {
-//         console.log(error)
-//         res.status(500).json({
-//             message: "Server Error",
-//             error
-//         })
-//     }
-// }
-
-exports.uploadeImg = async (req, res) => {
+exports.addPropImg = async (req, res) => {
     try {
+        const id = parseInt(req.params.id)
         const file = req.file
-
-        await azureImgUpload(file).then((resp) => {
-            console.log("resp", resp)
+        await azureUpload(file).then(async (resp) => {
+            var temp = {
+                "prop_id": id,
+                "property_img": `property/${file.originalname}`,
+            }
+            var upload_img = await PropertyIMG.create(temp)
+            res.status(200).json({
+                message: "Success upload",
+                upload_img
+            })
         }).catch((error) => {
-            console.log("error", error)
+            return res.status(400).json({
+                message: "failed to upload"
+            })
         })
     } catch (error) {
         console.log(error)
+        res.status(500).json({
+            message: "Server Error",
+            error
+        })
+    }
+}
+
+exports.uploadeBrochure = async (req, res) => {
+    try {
+        const id = parseInt(req.params.id)
+        const file = req.file
+        await azureUpload(file).then(async (resp) => {
+            var brochure = await db.sequelize.query(`UPDATE property SET brocher='${file.originalname}' WHERE id = ${id};`)
+            res.status(200).json({
+                message: "Success upload",
+                brochure
+            })
+        }).catch((error) => {
+            console.log(error)
+            return res.status(400).json({
+                message: "failed to upload"
+            })
+        })
+    } catch (error) {
         res.status(500).json({
             message: "Server Error",
             error

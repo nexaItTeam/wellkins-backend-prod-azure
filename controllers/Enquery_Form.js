@@ -1,6 +1,6 @@
 const { Enquiry_form, Client } = require('../models')
 const model = require('../models')
-const { uploadDocs } = require('../service/azure')
+const { documents } = require('../middleware/Document')
 
 exports.getEnqForm = async (req, res) => {
     try {
@@ -149,8 +149,7 @@ exports.deleteEnqForm = async (req, res) => {
 
 exports.uploadeDocument = async (req, res) => {
     try {
-        console.log(req.files)
-        uploadDocs(req.files)
+      
     } catch (error) {
 
     }

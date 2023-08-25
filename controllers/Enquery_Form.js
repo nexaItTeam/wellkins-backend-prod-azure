@@ -1,5 +1,8 @@
-const { Enquiry_form, Client } = require('../models')
+const { Enquiry_form, Client, Document } = require('../models')
 const model = require('../models')
+const { documents } = require('../middleware/Document')
+const imgUpload = require('../middleware/ImmgUpload')
+const { azureUpload } = require('../service/azure')
 
 exports.getEnqForm = async (req, res) => {
     try {
@@ -146,6 +149,30 @@ exports.deleteEnqForm = async (req, res) => {
     }
 }
 
-exports.uploadeDocument = async (req, res) => { 
+exports.uploadeDocument = async (req, res) => {
+    try {
+        const id = parseInt(req.body.id)
+        const docs_type = req.body.docs_type
+        const file = req.file
+        console.log("file", file, id, docs_type)
+        await azureUpload(file).then(async (_) => {
+            var temp = {
+                "client_id": id,
+                "docs_type": docs_type,
+                "docs_img": `document/${file.originalname}`
+            }
+            var upload_img = await Document.create(temp)
+            res.status(200).json({
+                message: "Success upload",
+                upload_img
+            })
+        }).catch((error) => {
+            console.log(error)
+            return res.status(400).json({
+                message: "failed to upload"
+            })
+        })
+    } catch (error) {
 
+    }
 }

@@ -99,7 +99,7 @@ exports.updateEnqForm = async (req, res) => {
             enq_form,
             {
                 where: {
-                    id: enq_form.id
+                    client_id: enq_form.client_id
                 }
             }
         )
@@ -108,6 +108,7 @@ exports.updateEnqForm = async (req, res) => {
             update_form
         })
     } catch (error) {
+        console.log(error)
         res.status(500).json({
             message: "Server Error",
             error

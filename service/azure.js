@@ -16,7 +16,7 @@ exports.azureUpload = async (file) => {
     );
     if (file.fieldname === 'brochure') {
         data = Buffer.from("BASE-64-ENCODED-PDF", "base64");
-    } else if (file.fieldname === 'property') {
+    } else if (file.fieldname === 'property' || file.fieldname === 'document') {
         data = Buffer.from(file.buffer, "base64");
     }
     const containerClient = await blobServiceClient.getContainerClient(file.fieldname)

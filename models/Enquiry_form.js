@@ -39,6 +39,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.JSON,
             field: 'form_h'
         },
+        investor_form_type:{
+            type: DataTypes.STRING,
+            field: 'investor_form_type'
+        },
         isDraft: {
             type: DataTypes.BOOLEAN,
             field: 'isDraft',

@@ -4,6 +4,7 @@ const { createTokens } = require("../middleware/JWT")
 // const ShortUniqueId = require('short-unique-id');
 const generateUniqueId = require('generate-unique-id');
 const { mailGenerator } = require('../service/nodemailer')
+const { azureEmailService } = require('../service/azureEmail')
 
 exports.createClient = async (req, res) => {
     try {
@@ -66,6 +67,7 @@ exports.clientLogin = async (req, res) => {
         if (!find_user) {
             return res.status(400).json({ message: "User not found" })
         } else {
+            
             const dbPassword = find_user.password
             bcrypt.compare(login.password, dbPassword).then((match) => {
                 if (!match) {
@@ -179,3 +181,21 @@ exports.deleteClient = async (req, res) => {
     }
 }
 
+exports.sendEmail = async (req, res) => {
+    try {
+        var mail_body = {
+            "title": "test mail"
+        }
+        await azureEmailService(mail_body).then(() => {
+            return res.status(200).json({
+                message: "mail send successfully",
+            })
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            message: "Server Error",
+            error
+        })
+    }
+}

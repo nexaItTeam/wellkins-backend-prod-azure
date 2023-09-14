@@ -8,4 +8,6 @@ router.post('/client-login', clientController.clientLogin)
 router.post('/get', verify.validateToken, clientController.getClient)
 router.post('/update', verify.validateToken, clientController.updateClient)
 router.post('/delete', verify.validateToken, clientController.deleteClient)
+router.post('/send-email', clientController.sendEmail)
+
 module.exports = router

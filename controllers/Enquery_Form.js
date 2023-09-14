@@ -62,14 +62,12 @@ exports.addEnqForm = async (req, res) => {
         })
 
         // find form by client id
-        const find_form = await Enquiry_form.findOne({
-            where: {
-                client_id: enq_form.client_id
-            }
-        })
-        if (find_form) {
-            return res.status(400).json({ message: "User not allow to fill form again" })
-        } else if (!find_user) {
+        // const find_form = await Enquiry_form.findOne({
+        //     where: {
+        //         client_id: enq_form.client_id
+        //     }
+        // })
+        if (!find_user) {
             return res.status(400).json({ message: "User not found" })
         } else {
             var create_form = await Enquiry_form.create(enq_form)

@@ -56,6 +56,26 @@ exports.createClient = async (req, res) => {
     }
 }
 
+exports.createClients = async (req, res) => {
+    try {
+        const { clients } = req.body
+        const exists_email = []
+
+
+        const find_client = await Client.findOne({
+            where: {
+                client_email: clients[0].client_email
+            }
+        })
+        console.log(find_client)
+      
+
+
+    } catch (error) {
+
+    }
+}
+
 exports.clientLogin = async (req, res) => {
     try {
         const { login } = req.body
@@ -67,7 +87,6 @@ exports.clientLogin = async (req, res) => {
         if (!find_user) {
             return res.status(400).json({ message: "User not found" })
         } else {
-            
             const dbPassword = find_user.password
             bcrypt.compare(login.password, dbPassword).then((match) => {
                 if (!match) {
@@ -199,3 +218,4 @@ exports.sendEmail = async (req, res) => {
         })
     }
 }
+

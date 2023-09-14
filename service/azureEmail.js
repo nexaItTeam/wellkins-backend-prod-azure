@@ -12,7 +12,7 @@ const azureEmailService = async (body) => {
 
     try {
         const message = {
-            senderAddress: "<info@nexadesigngroup.com>",
+            senderAddress: "<info@wellkins.com.au>",
             content: {
                 subject: "Welcome to Azure Communication Services Email",
                 plainText: "This email message is sent from Azure Communication Services Email using the JavaScript SDK.",

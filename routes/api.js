@@ -12,6 +12,6 @@ router.use('/property', property)
 router.use('/blog', blog)
 router.use('/enquery', enquery)
 router.use('/client', client)
-router.use('/enq-form', Enq_Form)
+router.use('/order', Enq_Form)
 
 module.exports = router

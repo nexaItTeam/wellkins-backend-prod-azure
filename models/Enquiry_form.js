@@ -7,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'client_id'
         },
+        prop_id: {
+            type: DataTypes.INTEGER,
+            field: 'prop_id'
+        },
         form_a: {
             type: DataTypes.JSON,
             field: 'form_a'
@@ -39,7 +43,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.JSON,
             field: 'form_h'
         },
-        investor_form_type:{
+        investor_form_type: {
             type: DataTypes.STRING,
             field: 'investor_form_type'
         },

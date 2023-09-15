@@ -1,20 +1,23 @@
-const { Enquiry_form, Client, Document } = require('../models')
+const { Enquiry_form, Client, Document, Order } = require('../models')
 const model = require('../models')
 const { documents } = require('../middleware/Document')
 const imgUpload = require('../middleware/ImmgUpload')
 const { azureUpload } = require('../service/azure')
 
+// find all enq form
 exports.getEnqForm = async (req, res) => {
     try {
-        var get_Enq_Form = await Enquiry_form.findOne({
+        var get_Enq_Form = await Enquiry_form.findAll({
             where: {
                 isDelete: false,
-                client_id: req.body.client_id
+                client_id: req.body.client_id,
+                investor_form_type: req.body.investor_form_type,
             }
         })
         if (!get_Enq_Form) {
-            return res.status(404).json({
-                message: "Something went wrong"
+
+            return res.status(200).json({
+                message: "Data not found"
             })
         } else {
             return res.status(200).json({
@@ -51,6 +54,7 @@ exports.find_client = async (req, res) => {
     }
 }
 
+// order api
 exports.addEnqForm = async (req, res) => {
     try {
         const { enq_form } = req.body
@@ -60,27 +64,37 @@ exports.addEnqForm = async (req, res) => {
                 id: enq_form.client_id
             }
         })
-
-        // find form by client id
-        // const find_form = await Enquiry_form.findOne({
-        //     where: {
-        //         client_id: enq_form.client_id
-        //     }
-        // })
         if (!find_user) {
             return res.status(400).json({ message: "User not found" })
         } else {
-            var create_form = await Enquiry_form.create(enq_form)
-            if (!create_form) {
-                return res.status(404).json({
-                    message: "failed to create"
+            await Enquiry_form.create(enq_form).then(async (resp) => {
+                if (enq_form.isDraft != true) {
+                    var temp = {
+                        enq_form_id: resp.id,
+                        client_id: enq_form.client_id,
+                        prop_id: enq_form.prop_id,
+                        padeStatus: enq_form.padeStatus,
+                        investing_amount: enq_form.investing_amount
+                    }
+                    await Order.create(temp).then(() => {
+                        return res.status(200).json({
+                            message: "order place successfully"
+                        })
+                    }).catch((err) => {
+                        return res.status(400).json({
+                            message: "failed to create order"
+                        })
+                    })
+                } else {
+                    return res.status(200).json({
+                        message: "save draft"
+                    })
+                }
+            }).catch((err) => {
+                return res.status(400).json({
+                    message: "failed to create enquery form"
                 })
-            } else {
-                return res.status(200).json({
-                    message: "created",
-                    create_form
-                })
-            }
+            })
         }
     } catch (error) {
         res.status(500).json({
@@ -97,7 +111,9 @@ exports.updateEnqForm = async (req, res) => {
             enq_form,
             {
                 where: {
-                    client_id: enq_form.client_id
+                    client_id: enq_form.client_id,
+                    id: enq_form.id,
+                    investor_form_type: enq_form.investor_form_type
                 }
             }
         )

@@ -160,10 +160,34 @@ exports.updateEnqForm = async (req, res) => {
                 }
             }
         )
-        return res.status(200).send({
-            message: "update post",
-            update_form
-        })
+        if (enq_form.isDraft != true) {
+            var temp = {
+                enq_form_id: enq_form.id,
+                client_id: enq_form.client_id,
+                prop_id: enq_form.prop_id,
+                paidStatus: enq_form.paidStatus,
+                investing_amount: enq_form.investing_amount
+            }
+            await Order.create(temp).then(() => {
+                return res.status(200).json({
+                    message: "order place successfully",
+                    update_form
+                })
+            }).catch((err) => {
+                return res.status(400).json({
+                    message: "failed to create order"
+                })
+            })
+        } else {
+            return res.status(200).json({
+                message: "save draft",
+                update_form
+            })
+        }
+        // return res.status(200).send({
+        //     message: "update post",
+        //     update_form
+        // })
     } catch (error) {
         console.log(error)
         res.status(500).json({

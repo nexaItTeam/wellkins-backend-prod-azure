@@ -59,21 +59,31 @@ exports.createClient = async (req, res) => {
 exports.createClients = async (req, res) => {
     try {
         const { clients } = req.body
-        const exists_email = []
+        clients.forEach(async (email) => {
+            console.log(email.client_email)
+            await findEmail(email.client_email).then((resp) => {
+                console.log(resp)
+            })
+        });
 
-
-        const find_client = await Client.findOne({
-            where: {
-                client_email: clients[0].client_email
-            }
-        })
-        console.log(find_client)
-
-
-
+        // const find_client = await Client.findOne({
+        //     where: {
+        //         client_email: clients[0].client_email
+        //     }
+        // })
     } catch (error) {
 
     }
+}
+
+const findEmail = async (email) => {
+    const find_email = await Client.findOne({
+        where: {
+            client_email: email
+        }
+    })
+
+    return find_email
 }
 
 exports.clientLogin = async (req, res) => {

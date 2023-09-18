@@ -15,14 +15,15 @@ exports.getEnqForm = async (req, res) => {
             }
         })
         if (!get_Enq_Form) {
-
             return res.status(200).json({
                 message: "Data not found"
             })
         } else {
+            get_Enq_Form = get_Enq_Form[get_Enq_Form.length - 1]
+            var enq_form = [get_Enq_Form]
             return res.status(200).json({
                 message: "Success",
-                get_Enq_Form
+                enq_form
             })
         }
     } catch (error) {
@@ -97,6 +98,48 @@ exports.addEnqForm = async (req, res) => {
             })
         }
     } catch (error) {
+        res.status(500).json({
+            message: "Server Error",
+            error
+        })
+    }
+}
+
+// get order
+exports.getOrder = async (req, res) => {
+    try {
+        var get_order = await Order.findAll({
+            where: {
+                client_id: req.body.client_id
+            },
+            include: [
+                {
+                    model: model.Enquiry_form,
+                    as: 'enq_foem_data'
+                },
+                {
+                    model: model.Client,
+                    as: 'enq_client_data'
+                },
+                {
+                    model: model.Property,
+                    as: 'enq_prop_data'
+                }
+            ]
+        })
+
+        if (!get_order) {
+            return res.status(200).json({
+                message: "Data not found",
+            })
+        } else {
+            return res.status(200).json({
+                message: "Success",
+                get_order
+            })
+        }
+    } catch (error) {
+        console.log(error)
         res.status(500).json({
             message: "Server Error",
             error

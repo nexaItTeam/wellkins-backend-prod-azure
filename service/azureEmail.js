@@ -20,16 +20,17 @@ const azureEmailService = async (body) => {
             recipients: {
                 to: [
                     {
-                        address: "<tejas.d.talkar@gmail.com>",
+                        address: body.user_email,
                         displayName: "Customer Name",
                     },
                 ],
             },
+            html: mail
         };
 
         const poller = await emailClient.beginSend(message);
         const result = await poller.pollUntilDone();
-        console.log("result", result)
+
         return result
 
         // if (!poller.getOperationState().isStarted) {

@@ -68,7 +68,7 @@ exports.createClients = async (req, res) => {
             }
         })
         console.log(find_client)
-      
+
 
 
     } catch (error) {
@@ -203,7 +203,10 @@ exports.deleteClient = async (req, res) => {
 exports.sendEmail = async (req, res) => {
     try {
         var mail_body = {
-            "title": "test mail"
+            user_email: req.body.user_email,
+            Password: "",
+            ClientID: "",
+            temp_id: ""
         }
         await azureEmailService(mail_body).then(() => {
             return res.status(200).json({

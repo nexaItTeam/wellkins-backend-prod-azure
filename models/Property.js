@@ -6,6 +6,10 @@ module.exports = (sequelize, DataTypes) => {
             Property.hasOne(models.Enquery, {
                 foreignKey: "property_id",
             })
+
+            Property.hasOne(models.Order, {
+                foreignKey: "prop_id",
+            })
         }
     }
 

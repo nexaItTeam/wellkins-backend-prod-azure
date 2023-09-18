@@ -1,7 +1,13 @@
 const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-    class Enquiry_form extends Model { }
+    class Enquiry_form extends Model {
+        static associate(models) {
+            Enquiry_form.hasOne(models.Order, {
+                foreignKey: "enq_form_id",
+            })
+        }
+    }
     Enquiry_form.init({
         client_id: {
             type: DataTypes.INTEGER,

@@ -1,5 +1,6 @@
 const { Enquery } = require('../models')
 const model = require('../models')
+const { azureEmailService } = require('../service/azureEmail')
 
 exports.getAllenquery = async (req, res) => {
     try {
@@ -25,7 +26,6 @@ exports.getAllenquery = async (req, res) => {
             return res.status(200).json({
                 message: "Success",
                 getAllEnquery
-
             })
         }
     } catch (error) {
@@ -45,10 +45,15 @@ exports.addEnquery = async (req, res) => {
                 message: "failed to create"
             })
         } else {
+            // var temp = {
+            //     "user_email": enquery.user_email
+            // }
+            // await azureEmailService(temp).then(() => {
             return res.status(200).json({
                 message: "created",
                 create_enq
             })
+            // })
         }
     } catch (error) {
         res.status(500).json({

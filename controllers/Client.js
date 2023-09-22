@@ -1,10 +1,10 @@
-const { Client, Users } = require('../models')
+const { Client, Users, Password_reset } = require('../models')
 const bcrypt = require("bcrypt")
 const { createTokens } = require("../middleware/JWT")
 // const ShortUniqueId = require('short-unique-id');
 const generateUniqueId = require('generate-unique-id');
 const { mailGenerator } = require('../service/nodemailer')
-const { azureEmailService } = require('../service/azureEmail')
+const { azureEmailService, forgotPassword } = require('../service/azureEmail')
 
 exports.createClient = async (req, res) => {
     try {
@@ -212,19 +212,18 @@ exports.deleteClient = async (req, res) => {
 
 exports.sendEmail = async (req, res) => {
     try {
-        var mail_body = {
-            user_email: req.body.user_email,
-            Password: "",
-            ClientID: "",
-            temp_id: ""
-        }
-        await azureEmailService(mail_body).then(() => {
+        // var mail_body = {
+        //     user_email: req.body.user_email,
+        //     Password: "",
+        //     ClientID: "",
+        //     temp_id: ""
+        // }
+        await azureEmailService(req.body).then(() => {
             return res.status(200).json({
                 message: "mail send successfully",
             })
         })
     } catch (error) {
-        console.log(error)
         res.status(500).json({
             message: "Server Error",
             error
@@ -232,3 +231,51 @@ exports.sendEmail = async (req, res) => {
     }
 }
 
+exports.sendOtp = async (req, res) => {
+    try {
+        const otp = generateUniqueId({
+            length: 6,
+            useLetters: false
+        });
+        bcrypt.hash(otp, 10).then(async (hash) => {
+            var temp_1 = {
+                "otp": hash,
+                "email": req.body.email,
+                "createdAt": Date.now(),
+                "expireAt": Date.now() + 600000
+            }
+            const reset_pass = await Password_reset.create(temp_1)
+            if (reset_pass) {
+                var temp = {
+                    "otp": otp,
+                    "email": req.body.email,
+                }
+                forgotPassword(temp).then(() => {
+                    res.status(200).json({
+                        message: "OTP sent on your email"
+                    })
+                }).catch((error) => {
+                    res.status(400).json({
+                        message: "OTP not able sent"
+                    })
+                })
+            }
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: "Server Error",
+            error
+        })
+    }
+}
+
+exports.verifyOtp = async (req, res) => {
+    try {
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Server Error",
+            error
+        })
+    }
+}

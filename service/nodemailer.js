@@ -1,4 +1,4 @@
-                                                                                     const nodemailer = require("nodemailer");
+const nodemailer = require("nodemailer");
 const Mailgen = require('mailgen');
 
 const mailGenerator = async (body) => {

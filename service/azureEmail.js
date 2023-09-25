@@ -63,7 +63,16 @@ const forgotPassword = async (body) => {
             content: {
                 subject: "Verify your Email",
                 html: `<p>Enter <b>${body.otp}</b> in the app to verfiy your email address and complete security process</p>
-                <p>This code <b>expires in 10 min</b>.</p>`,
+                <p>This code <b>expires in 10 min</b>.</p> 
+                <p><strong><em>&nbsp;</em></strong><a href="https://wellkins.com.au/" rel="noopener noreferrer" target="_blank"title="&quot;https://wellkins.com.au/&quot; t">
+                <strong><em>
+                <img src="https://wellkinsstorageprod.blob.core.windows.net/assist/LOGO.png"/>
+                </em></strong></a></p>
+                <h4>T: 02 9119 4947</h4>
+                <h4>E:&nbsp;<a href="mailto:info@wellkins.com.au">info@wellkins.com.au</a></h4>
+                <h4>W<strong>:</strong>&nbsp;<a href="https://wellkins.com.au/" rel="noopener noreferrer"
+                target="_blank">https://wellkins.com.au/</a><br />
+                A<strong>:&nbsp;&nbsp;</strong>4.01/5 Celebration Drive,&nbsp;Bella Vista&nbsp;NSW 2153</h4>`,
             },
             recipients: {
                 to: [

@@ -4,7 +4,7 @@ const { createTokens } = require("../middleware/JWT")
 // const ShortUniqueId = require('short-unique-id');
 const generateUniqueId = require('generate-unique-id');
 const { mailGenerator } = require('../service/nodemailer')
-const { azureEmailService, forgotPassword } = require('../service/azureEmail')
+const { azureEmailService, forgotPassword, accountCreate } = require('../service/azureEmail')
 
 exports.createClient = async (req, res) => {
     try {
@@ -28,12 +28,13 @@ exports.createClient = async (req, res) => {
                 Client.create(client).then(async (createUser) => {
                     const accessToken = createTokens(createUser)
                     var mail_body = {
+                        client_name: client.full_name,
                         client_email: client.client_email,
                         password: pass,
                         client_id: id,
                         temp_id: createUser.id
                     }
-                    await mailGenerator(mail_body).then(() => {
+                    await accountCreate(mail_body).then(() => {
                         return res.status(200).json({
                             message: "Client register successful",
                             createUser,

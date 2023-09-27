@@ -1,7 +1,7 @@
 const { S3 } = require('aws-sdk')
 
 exports.imageUpload = async (file) => {
-    console.log("file",file)
+    console.log("file", file)
     const s3 = new S3()
     const params = {
         Bucket: process.env.BUCKET_NAME,
@@ -12,6 +12,7 @@ exports.imageUpload = async (file) => {
     }
 
     return s3.upload(params).promise()
+    // test commit
     // const params = files.map(file => {
     //     return {
     //         Bucket: process.env.AWS_BUCKET_NAME,

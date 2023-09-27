@@ -12,7 +12,6 @@ exports.imageUpload = async (file) => {
     }
 
     return s3.upload(params).promise()
-    // test commit
     // const params = files.map(file => {
     //     return {
     //         Bucket: process.env.AWS_BUCKET_NAME,

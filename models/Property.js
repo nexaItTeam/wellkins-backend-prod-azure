@@ -50,6 +50,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'brocher'
         },
+        price_per_share: {
+            type: DataTypes.INTEGER,
+            field: 'price_per_share'
+        },
         isDelete: {
             type: DataTypes.BOOLEAN,
             field: 'isDelete',

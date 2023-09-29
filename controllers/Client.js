@@ -60,31 +60,42 @@ exports.createClient = async (req, res) => {
 exports.createClients = async (req, res) => {
     try {
         const { clients } = req.body
-        clients.forEach(async (email) => {
-            console.log(email.client_email)
-            await findEmail(email.client_email).then((resp) => {
-                console.log(resp)
-            })
+        // const find_mail = await findEmail(clients)
+        // console.log("find mails==", find_mail)
+        const emails = []
+        clients.forEach(data => {
+            emails.push(data.client_email)
         });
-
-        // const find_client = await Client.findOne({
-        //     where: {
-        //         client_email: clients[0].client_email
-        //     }
-        // })
+        const find_client = await Client.findAll({
+            where: {
+                client_email: emails
+            }
+        })
+        return res.status(200).json({
+            message: "Success",
+            find_client
+        })
     } catch (error) {
-
+        return res.status(500).json({
+            message: "Server Error",
+        })
     }
 }
 
-const findEmail = async (email) => {
-    const find_email = await Client.findOne({
-        where: {
-            client_email: email
+const findEmail = async (emails) => {
+    const email = emails.map((data) => {
+        return {
+            client_email: data.email
         }
     })
+    return Promise.all(email.maap(mail => Client.findAll(mail).Promise()))
+    // const find_email = await Client.findAll({
+    //     where: {
+    //         client_email: email
+    //     }
+    // })
 
-    return find_email
+    // return find_email
 }
 
 exports.clientLogin = async (req, res) => {

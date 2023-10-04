@@ -20,5 +20,8 @@ router.post('/getImgById', propertyControler.getPropertyImgById)
 router.post('/deleteimg', verify.validateToken, propertyControler.deleteImg)
 router.post('/upload/property/:id', verify.validateToken, imgUpload.upload.single('property'), propertyControler.addPropImg)
 router.post('/upload/brochure/:id', verify.validateToken, imgUpload.upload.single('brochure'), propertyControler.uploadeBrochure)
-
+router.post('/upload/pds/:id', verify.validateToken, imgUpload.upload.single('pds'), propertyControler.uploadepds)
+router.post('/upload/spds/:id', verify.validateToken, imgUpload.upload.single('spds'), propertyControler.uploadespds)
+router.post('/upload/tdm/:id', verify.validateToken, imgUpload.upload.single('tdm'), propertyControler.uploadestdm)
+router.post('/upload/fsg/:id', verify.validateToken, imgUpload.upload.single('fsg'), propertyControler.uploadesfsg)
 module.exports = router

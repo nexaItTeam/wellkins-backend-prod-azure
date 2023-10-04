@@ -4,7 +4,46 @@ const { documents } = require('../middleware/Document')
 const imgUpload = require('../middleware/ImmgUpload')
 const { azureUpload } = require('../service/azure')
 
-// find all enq form
+// get all form
+exports.getAllOrder = async (req, res) => {
+    try {
+        var getOrder = await Order.findAndCountAll({
+            order: [['createdAt', 'DESC']],
+            include: [
+                {
+                    model: model.Property,
+                    as: 'enq_prop_data'
+                },
+                {
+                    model: model.Client,
+                    as: 'enq_client_data'
+                },
+                {
+                    model: model.Enquiry_form,
+                    as: 'enq_form_data'
+                }
+            ]
+        })
+        if (!getOrder) {
+            return res.status(400).json({
+                message: "Something went wrong"
+            })
+        } else {
+            return res.status(200).json({
+                message: "Success",
+                getOrder
+            })
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            message: "Server Error",
+            error
+        })
+    }
+}
+
+// find enq form
 exports.getEnqForm = async (req, res) => {
     try {
         var get_Enq_Form = await Enquiry_form.findAll({

@@ -140,7 +140,8 @@ exports.getClient = async (req, res) => {
     try {
         var getClient = await Client.findAndCountAll({
             where: {
-                isDelete: false
+                isDelete: false,
+                active: req.body.active
             },
             order: [['createdAt', 'DESC']],
             limit: req.body.limit,
@@ -334,7 +335,6 @@ exports.changePassword = async (req, res) => {
         if (find_client) {
             bcrypt.hash(client.password, 10).then(async (hash) => {
                 client.password = hash
-                console.log("client", client)
                 var update_client = await Client.update(
                     client,
                     {

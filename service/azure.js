@@ -16,7 +16,16 @@ exports.azureUpload = async (file) => {
     );
     if (file.fieldname === 'brochure') {
         data = Buffer.from("BASE-64-ENCODED-PDF", "base64");
-    } else if (file.fieldname === 'property' || file.fieldname === 'document') {
+    } else if (file.fieldname === 'pds') {
+        data = Buffer.from("BASE-64-ENCODED-PDF", "base64");
+    } else if (file.fieldname === 'spds') {
+        data = Buffer.from("BASE-64-ENCODED-PDF", "base64");
+    } else if (file.fieldname === 'tdm') {
+        data = Buffer.from("BASE-64-ENCODED-PDF", "base64");
+    } else if (file.fieldname === 'fsg') {
+        data = Buffer.from("BASE-64-ENCODED-PDF", "base64");
+    }
+    else if (file.fieldname === 'property' || file.fieldname === 'document') {
         data = Buffer.from(file.buffer, "base64");
     }
     const containerClient = await blobServiceClient.getContainerClient(file.fieldname)

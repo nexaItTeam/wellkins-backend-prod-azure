@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'client_id'
         },
+        active: {
+            type: DataTypes.INTEGER,
+            field: 'active'
+        },
         isDelete: {
             type: DataTypes.BOOLEAN,
             field: 'isDelete',
@@ -38,7 +42,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             field: 'isVerified',
             defaultValue: false,
-        }
+        },
+
     }, {
         sequelize,
         tableName: 'client',

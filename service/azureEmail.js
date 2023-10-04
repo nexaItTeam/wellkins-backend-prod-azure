@@ -13,8 +13,7 @@ const azureEmailService = async (body) => {
                 senderAddress: "<info@wellkins.com.au>",
                 content: {
                     subject: body.subject,
-                    // plainText: body.body,
-                    html: "<html><h1>tejas</h1></html>"
+                    html: body.body
                 },
                 recipients: {
                     to: [
@@ -46,8 +45,8 @@ const azureEmailService = async (body) => {
         //     }
         // };
         // const poller = await emailClient.beginSend(message);
-        // // const result = await poller.pollUntilDone();
-        // return poller
+        // const result = await poller.pollUntilDone();
+        // return result
     } catch (e) {
         console.log(e);
         return e
@@ -141,7 +140,7 @@ const accountCreate = async (body) => {
             senderAddress: "<info@wellkins.com.au>",
             content: {
                 subject: "Account Create",
-                html: `<p>Dear <strong>${body.full_name}</strong>,</p>
+                html: `<p>Dear <strong>${body.client_name}</strong>,</p>
                 <p>Your Wellkins Investment&nbsp;account has been activated.</p>
                 <p>Please save the below login details for your future reference. The password can be changed after first login.</p>
                 <p>Login Id: <strong>${body.client_email}</strong></p>

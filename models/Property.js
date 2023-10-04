@@ -50,6 +50,22 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             field: 'brocher'
         },
+        pds: {
+            type: DataTypes.STRING,
+            field: 'pds'
+        },
+        spds: {
+            type: DataTypes.STRING,
+            field: 'spds'
+        },
+        tdm: {
+            type: DataTypes.STRING,
+            field: 'tdm'
+        },
+        fsg: {
+            type: DataTypes.STRING,
+            field: 'fsg'
+        },
         price_per_share: {
             type: DataTypes.INTEGER,
             field: 'price_per_share'

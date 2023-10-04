@@ -4,6 +4,8 @@ const EnqueryFormControler = require('../controllers/Enquery_Form')
 const verify = require("../middleware/JWT")
 const imgUpload = require('../middleware/ImmgUpload')
 
+
+router.post('/getOrder', verify.validateToken, EnqueryFormControler.getAllOrder)
 router.post('/get', verify.validateToken, EnqueryFormControler.getEnqForm)
 router.post('/post', verify.validateToken, EnqueryFormControler.addEnqForm)
 router.post('/update', verify.validateToken, EnqueryFormControler.updateEnqForm)

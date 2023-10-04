@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             Order.belongsTo(models.Enquiry_form, {
                 foreignKey: "enq_form_id",
-                as: 'enq_foem_data'
+                as: 'enq_form_data'
             })
 
             Order.belongsTo(models.Client, {

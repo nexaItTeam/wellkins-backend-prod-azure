@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     }
     Order.init({
         order_id: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING,
             field: 'order_id'
         },
         enq_form_id: {

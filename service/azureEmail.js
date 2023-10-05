@@ -146,6 +146,7 @@ const accountCreate = async (body) => {
                 <p>Login Id: <strong>${body.client_email}</strong></p>
                 <p>Password: <strong>${body.password}</strong></p>
                 <p>Client ID: <strong>${body.client_id}</strong></p>
+                <p><a href='https://client.wellkins.com.au/login'><strong>Click to login into your account</strong></a></p>
                 <p>&nbsp;</p>
                 <p>Thanks &amp; Regards,</p>
                 <p><span style="font-size:16px"><strong>Team Wellkins Capital</strong></span></p>

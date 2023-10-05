@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
     Order.init({
+        order_id: {
+            type: DataTypes.INTEGER,
+            field: 'order_id'
+        },
         enq_form_id: {
             type: DataTypes.INTEGER,
             field: 'enq_form_id'

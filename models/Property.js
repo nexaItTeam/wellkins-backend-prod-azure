@@ -74,6 +74,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             field: 'isDelete',
             defaultValue: false,
+        },
+        isDocument: {
+            type: DataTypes.BOOLEAN,
+            field: 'isDelete',
+            defaultValue: false
         }
     }, {
         sequelize,

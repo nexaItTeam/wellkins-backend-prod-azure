@@ -24,4 +24,5 @@ router.post('/upload/pds/:id', verify.validateToken, imgUpload.upload.single('pd
 router.post('/upload/spds/:id', verify.validateToken, imgUpload.upload.single('spds'), propertyControler.uploadespds)
 router.post('/upload/tdm/:id', verify.validateToken, imgUpload.upload.single('tdm'), propertyControler.uploadestdm)
 router.post('/upload/fsg/:id', verify.validateToken, imgUpload.upload.single('fsg'), propertyControler.uploadesfsg)
+
 module.exports = router

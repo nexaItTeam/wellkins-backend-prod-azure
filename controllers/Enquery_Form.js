@@ -3,27 +3,52 @@ const model = require('../models')
 const { documents } = require('../middleware/Document')
 const imgUpload = require('../middleware/ImmgUpload')
 const { azureUpload } = require('../service/azure')
+const generateUniqueId = require('generate-unique-id');
 
 // get all form
 exports.getAllOrder = async (req, res) => {
     try {
-        var getOrder = await Order.findAndCountAll({
-            order: [['createdAt', 'DESC']],
-            include: [
-                {
-                    model: model.Property,
-                    as: 'enq_prop_data'
+        var getOrder
+        if (req.body.client_id != null) {
+            getOrder = await Order.findAndCountAll({
+                where: {
+                    client_id: req.body.client_id
                 },
-                {
-                    model: model.Client,
-                    as: 'enq_client_data'
-                },
-                {
-                    model: model.Enquiry_form,
-                    as: 'enq_form_data'
-                }
-            ]
-        })
+                order: [['createdAt', 'DESC']],
+                include: [
+                    {
+                        model: model.Property,
+                        as: 'enq_prop_data'
+                    },
+                    {
+                        model: model.Client,
+                        as: 'enq_client_data'
+                    },
+                    {
+                        model: model.Enquiry_form,
+                        as: 'enq_form_data'
+                    }
+                ]
+            })
+        } else {
+            getOrder = await Order.findAndCountAll({
+                order: [['createdAt', 'DESC']],
+                include: [
+                    {
+                        model: model.Property,
+                        as: 'enq_prop_data'
+                    },
+                    {
+                        model: model.Client,
+                        as: 'enq_client_data'
+                    },
+                    {
+                        model: model.Enquiry_form,
+                        as: 'enq_form_data'
+                    }
+                ]
+            })
+        }
         if (!getOrder) {
             return res.status(400).json({
                 message: "Something went wrong"
@@ -200,7 +225,12 @@ exports.updateEnqForm = async (req, res) => {
             }
         )
         if (enq_form.isDraft != true) {
+            const order_id = generateUniqueId({
+                length: 10,
+                useLetters: false
+            })
             var temp = {
+                order_id: order_id,
                 enq_form_id: enq_form.id,
                 client_id: enq_form.client_id,
                 prop_id: enq_form.prop_id,
@@ -295,5 +325,28 @@ exports.uploadeDocument = async (req, res) => {
         })
     } catch (error) {
 
+    }
+}
+
+// update order status
+exports.orderStatus = async (req, res) => {
+    try {
+        const { order } = req.body
+        var update_order = await Order.update(
+            order,
+            {
+                where: {
+                    id: order.id
+                }
+            })
+        return res.status(200).json({
+            message: "order update successfully",
+            update_order
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "server data",
+            error
+        })
     }
 }

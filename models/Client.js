@@ -43,7 +43,11 @@ module.exports = (sequelize, DataTypes) => {
             field: 'isVerified',
             defaultValue: false,
         },
-
+        isFirst: {
+            type: DataTypes.BOOLEAN,
+            field: 'isFirst',
+            defaultValue: true,
+        }
     }, {
         sequelize,
         tableName: 'client',

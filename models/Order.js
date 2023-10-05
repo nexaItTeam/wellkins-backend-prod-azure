@@ -37,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'prop_id'
         },
         paidStatus: {
-            type: DataTypes.BOOLEAN,
+            type: DataTypes.INTEGER,
             field: 'paidStatus'
         },
         investing_amount: {

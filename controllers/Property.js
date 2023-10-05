@@ -290,18 +290,19 @@ exports.uploadepds = async (req, res) => {
     try {
         const id = parseInt(req.params.id)
         const file = req.file
-        await azureUpload(file).then(async (resp) => {
-            var pds = await db.sequelize.query(`UPDATE property SET brocher='${file.originalname}' WHERE id = ${id};`)
-            res.status(200).json({
-                message: "Success upload",
-                pds
-            })
-        }).catch((error) => {
-            console.log(error)
-            return res.status(400).json({
-                message: "failed to upload"
-            })
-        })
+      
+        // await azureUpload(file).then(async (resp) => {
+        //     var pds = await db.sequelize.query(`UPDATE property SET brocher='${file.originalname}' WHERE id = ${id};`)
+        //     res.status(200).json({
+        //         message: "Success upload",
+        //         pds
+        //     })
+        // }).catch((error) => {
+        //     console.log(error)
+        //     return res.status(400).json({
+        //         message: "failed to upload"
+        //     })
+        // })
     } catch (error) {
         res.status(500).json({
             message: "Server Error",

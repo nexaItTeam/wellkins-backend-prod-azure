@@ -145,7 +145,7 @@ exports.addEnqForm = async (req, res) => {
                         prop_id: enq_form.prop_id,
                         paidStatus: enq_form.paidStatus,
                         investing_amount: enq_form.investing_amount,
-                        paidStatus:enq_form.paidStatus
+                        paidStatus: enq_form.paidStatus
                     }
                     await Order.create(temp).then(() => {
                         return res.status(200).json({
@@ -242,7 +242,7 @@ exports.updateEnqForm = async (req, res) => {
                 prop_id: enq_form.prop_id,
                 paidStatus: enq_form.paidStatus,
                 investing_amount: enq_form.investing_amount,
-                paidStatus:enq_form.paidStatus
+                paidStatus: enq_form.paidStatus
             }
             await Order.create(temp).then(() => {
                 return res.status(200).json({
@@ -353,6 +353,26 @@ exports.orderStatus = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             message: "server data",
+            error
+        })
+    }
+}
+
+exports.updateOrderStatus = async (req, res) => {
+    try {
+        const { order } = req.body
+        var updateStatus = await Order.update(order, {
+            where: {
+                id: order.id
+            }
+        })
+        return res.status(200).send({
+            message: "update User",
+          
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: "Server Error",
             error
         })
     }

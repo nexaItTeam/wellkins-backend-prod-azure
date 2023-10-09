@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'prop_id'
         },
+        primary_index: {
+            type: DataTypes.INTEGER,
+            field: 'primary_index'
+        },
         form_a: {
             type: DataTypes.JSON,
             field: 'form_a'

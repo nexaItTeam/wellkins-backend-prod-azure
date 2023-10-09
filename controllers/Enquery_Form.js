@@ -134,12 +134,18 @@ exports.addEnqForm = async (req, res) => {
         } else {
             await Enquiry_form.create(enq_form).then(async (resp) => {
                 if (enq_form.isDraft != true) {
+                    const order_id = generateUniqueId({
+                        length: 10,
+                        useLetters: false
+                    })
                     var temp = {
-                        enq_form_id: resp.id,
+                        order_id: order_id,
+                        enq_form_id: enq_form.id,
                         client_id: enq_form.client_id,
                         prop_id: enq_form.prop_id,
-                        padeStatus: enq_form.padeStatus,
-                        investing_amount: enq_form.investing_amount
+                        paidStatus: enq_form.paidStatus,
+                        investing_amount: enq_form.investing_amount,
+                        paidStatus:enq_form.paidStatus
                     }
                     await Order.create(temp).then(() => {
                         return res.status(200).json({
@@ -235,7 +241,8 @@ exports.updateEnqForm = async (req, res) => {
                 client_id: enq_form.client_id,
                 prop_id: enq_form.prop_id,
                 paidStatus: enq_form.paidStatus,
-                investing_amount: enq_form.investing_amount
+                investing_amount: enq_form.investing_amount,
+                paidStatus:enq_form.paidStatus
             }
             await Order.create(temp).then(() => {
                 return res.status(200).json({

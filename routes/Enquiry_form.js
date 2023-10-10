@@ -13,5 +13,6 @@ router.post('/delete', verify.validateToken, EnqueryFormControler.deleteEnqForm)
 router.post('/find_client', verify.validateToken, EnqueryFormControler.find_client)
 router.post('/document', imgUpload.upload.single('document'), EnqueryFormControler.uploadeDocument)
 router.post('/change-status', verify.validateToken, EnqueryFormControler.updateOrderStatus)
+router.post('/invested-locations', verify.validateToken,EnqueryFormControler.investedLocations)
 
 module.exports = router

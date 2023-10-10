@@ -85,7 +85,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'state'
         },
         prop_type: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER,
             field: 'prop_type'
         }
     }, {

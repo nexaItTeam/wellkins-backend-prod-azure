@@ -79,6 +79,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             field: 'isDelete',
             defaultValue: false
+        },
+        state: {
+            type: DataTypes.STRING,
+            field: 'state'
+        },
+        prop_type: {
+            type: DataTypes.INTEGER,
+            field: 'prop_type'
         }
     }, {
         sequelize,

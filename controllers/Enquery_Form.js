@@ -4,6 +4,7 @@ const { documents } = require('../middleware/Document')
 const imgUpload = require('../middleware/ImmgUpload')
 const { azureUpload } = require('../service/azure')
 const generateUniqueId = require('generate-unique-id');
+const db = require('../models');
 
 // get all form
 exports.getAllOrder = async (req, res) => {
@@ -145,7 +146,7 @@ exports.addEnqForm = async (req, res) => {
                         prop_id: enq_form.prop_id,
                         paidStatus: enq_form.paidStatus,
                         investing_amount: enq_form.investing_amount,
-                        paidStatus:enq_form.paidStatus
+                        paidStatus: enq_form.paidStatus
                     }
                     await Order.create(temp).then(() => {
                         return res.status(200).json({
@@ -242,7 +243,7 @@ exports.updateEnqForm = async (req, res) => {
                 prop_id: enq_form.prop_id,
                 paidStatus: enq_form.paidStatus,
                 investing_amount: enq_form.investing_amount,
-                paidStatus:enq_form.paidStatus
+                paidStatus: enq_form.paidStatus
             }
             await Order.create(temp).then(() => {
                 return res.status(200).json({
@@ -357,3 +358,71 @@ exports.orderStatus = async (req, res) => {
         })
     }
 }
+
+exports.updateOrderStatus = async (req, res) => {
+    try {
+        const { order } = req.body
+        var updateStatus = await Order.update(order, {
+            where: {
+                id: order.id
+            }
+        })
+        return res.status(200).send({
+            message: "update User",
+            updateStatus
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: "Server Error",
+            error
+        })
+    }
+}
+
+exports.investedLocations = async (req, res) => {
+    try {
+        var VIC = await db.sequelize.query(`select count(property.state) as count from property inner join nexa_capital.order on nexa_capital.order.prop_id = nexa_capital.property.id where state ='VIC'; `)
+        var NSW = await db.sequelize.query(`select count(property.state) as count from property inner join nexa_capital.order on nexa_capital.order.prop_id = nexa_capital.property.id where state ='NSW'; `)
+        var QLD = await db.sequelize.query(`select count(property.state) as count from property inner join nexa_capital.order on nexa_capital.order.prop_id = nexa_capital.property.id where state ='OLD'; `)
+        var SA = await db.sequelize.query(`select count(property.state) as count from property inner join nexa_capital.order on nexa_capital.order.prop_id = nexa_capital.property.id where state ='SA'; `)
+        var TAS = await db.sequelize.query(`select count(property.state) as count from property inner join nexa_capital.order on nexa_capital.order.prop_id = nexa_capital.property.id where state ='TAS'; `)
+        var WA = await db.sequelize.query(`select count(property.state) as count from property inner join nexa_capital.order on nexa_capital.order.prop_id = nexa_capital.property.id where state ='WA'; `)
+        var ACT = await db.sequelize.query(`select count(property.state) as count from property inner join nexa_capital.order on nexa_capital.order.prop_id = nexa_capital.property.id where state ='ACT'; `)
+        var NT = await db.sequelize.query(`select count(property.state) as count from property inner join nexa_capital.order on nexa_capital.order.prop_id = nexa_capital.property.id where state ='NT'; `)
+
+        var data = [
+            {
+                "VIC": VIC[0][0]['count']
+            },
+            {
+                "NSW": NSW[0][0]['count']
+            },
+            {
+                "QLD": QLD[0][0]['count']
+            },
+            {
+                "SA": SA[0][0]['count']
+            },
+            {
+                "TAS": TAS[0][0]['count']
+            },
+            {
+                "WA": WA[0][0]['count']
+            },
+            {
+                "ACT": ACT[0][0]['count']
+            },
+            {
+                "NT": NT[0][0]['count']
+            },
+        ]
+        return res.status(200).send({
+            data
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: "Server Error",
+            error
+        })
+    }
+} 

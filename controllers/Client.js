@@ -324,7 +324,7 @@ exports.verifyOtp = async (req, res) => {
     }
 }
 
-exports.changePassword = async (req, res) => {
+exports.forgotPassword = async (req, res) => {
     try {
         const { client } = req.body
         const find_client = await Client.findOne({
@@ -354,5 +354,18 @@ exports.changePassword = async (req, res) => {
             message: "Server Error",
             error
         })
+    }
+}
+
+exports.changePassword = async (req, res) => {
+    try {
+        const find_client = await Client.findOne({
+            where: {
+                client_email: req.body.email
+            }
+        })
+        
+    } catch (error) {
+
     }
 }

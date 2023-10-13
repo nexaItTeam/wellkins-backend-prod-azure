@@ -134,6 +134,7 @@ exports.addEnqForm = async (req, res) => {
             return res.status(400).json({ message: "User not found" })
         } else {
             await Enquiry_form.create(enq_form).then(async (resp) => {
+                console.log(resp.id)
                 if (enq_form.isDraft != true) {
                     const order_id = generateUniqueId({
                         length: 10,
@@ -141,7 +142,7 @@ exports.addEnqForm = async (req, res) => {
                     })
                     var temp = {
                         order_id: order_id,
-                        enq_form_id: enq_form.id,
+                        enq_form_id: enq_form.id || resp.id,
                         client_id: enq_form.client_id,
                         prop_id: enq_form.prop_id,
                         paidStatus: enq_form.paidStatus,

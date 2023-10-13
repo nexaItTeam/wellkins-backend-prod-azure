@@ -359,13 +359,41 @@ exports.forgotPassword = async (req, res) => {
 
 exports.changePassword = async (req, res) => {
     try {
+        const { client } = req.body
         const find_client = await Client.findOne({
             where: {
-                client_email: req.body.email
+                client_email: client.email
             }
         })
-        
+        const dbPassword = find_client.password
+        await bcrypt.compare(client.old_password, dbPassword).then(async (match) => {
+            if (!match) {
+                return res.status(200).json({
+                    error: "Wrong Credential!"
+                })
+            } else {
+                await bcrypt.hash(client.new_password, 10).then(async (hash) => {
+                    var temp = {
+                        "id": find_client.id,
+                        "password": hash,
+                        "isFirst": false
+                    }
+                    await Client.update(temp, {
+                        where: {
+                            id: temp.id
+                        }
+                    }).then(() => {
+                        return res.status(200).json({
+                            error: "password change successfully"
+                        })
+                    })
+                })
+            }
+        })
     } catch (error) {
-
+        return res.status(500).json({
+            message: "Server Error",
+            error
+        })
     }
 }

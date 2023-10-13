@@ -12,6 +12,7 @@ router.post('/delete', verify.validateToken, clientController.deleteClient)
 router.post('/send-email', clientController.sendEmail)
 router.post('/send-otp', clientController.sendOtp)
 router.post('/verify-otp', clientController.verifyOtp)
-router.post('/change-password', clientController.changePassword)
+router.post('/forgot-password', clientController.forgotPassword)
+router.post('/change-password', verify.validateToken, clientController.changePassword)
 
 module.exports = router

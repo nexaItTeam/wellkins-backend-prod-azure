@@ -59,36 +59,41 @@ exports.createClient = async (req, res) => {
 
 exports.createClients = async (req, res) => {
     try {
-        const  clients  = req.body
+        const clients = req.body
         console.log(clients)
         // const find_mail = await findEmail(clients)
         // console.log("find mails==", find_mail)
         const emails = []
-         clients.forEach(data => {
+        clients.forEach(data => {
             emails.push(data.client_email)
-        }); 
+        });
         console.log(emails)
         const find_client = await Client.findAll({
-           /*  where: {
-                client_email: emails
-            } */
+            /*  where: {
+                 client_email: emails
+             } */
         })
-       //console.log(find_client.findIndex(x => x.client_email =='tejas.d.talkar@gmail.com'))
-       const foundindex=[]
-         for(let i=0; i < emails.length ; i++){
-          var index=  find_client.findIndex(x => x.client_email == emails[i])
-          if(index != -1){
-            find_client.splice(index,1)
-          }
-        } 
-           /* for(let i= 0; i < foundindex.length ; i ++){
-            find_client.splice(foundindex[i],1)
-           } */
+        //console.log(find_client.findIndex(x => x.client_email =='tejas.d.talkar@gmail.com'))
+        const foundindex = []
+        for (let i = 0; i < find_client.length; i++) {
+            var index = emails.findIndex(x => x == find_client[i].client_email)
+            if (index != -1) {
+                emails.splice(index, 1)
+            }
+        }
+        /* for(let i= 0; i < foundindex.length ; i ++){
+         find_client.splice(foundindex[i],1)
+        } */
 
-        return res.status(200).json({
-            message: "Success",
-            find_client
-        }) 
+        emails.forEach((data) => {
+            console.log("===",data)
+            var temp 
+        })
+
+        // return res.status(200).json({
+        //     message: "Success",
+        //     emails
+        // })
     } catch (error) {
         console.log(error)
         return res.status(500).json({

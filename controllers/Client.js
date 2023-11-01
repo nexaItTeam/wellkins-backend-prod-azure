@@ -97,20 +97,30 @@ exports.createClients = async (req, res) => {
     }
 }
 
-const findEmail = async (emails) => {
-    const email = emails.map((data) => {
-        return {
-            client_email: data.email
-        }
-    })
-    return Promise.all(email.maap(mail => Client.findAll(mail).Promise()))
-    // const find_email = await Client.findAll({
-    //     where: {
-    //         client_email: email
-    //     }
-    // })
+const findEmail = async (array1, array2) => {
+    const set1 = new Set(array1);
+    const set2 = new Set(array2);
+    // Create a new set for unique objects
+    const uniqueSet = new Set();
 
-    // return find_email
+    // Iterate through the first set and check for uniqueness
+    for (const obj of set1) {
+        if (!set2.has(obj)) {
+            uniqueSet.add(obj);
+        }
+    }
+
+    // Iterate through the second set and check for uniqueness
+    for (const obj of set2) {
+        if (!set1.has(obj)) {
+            uniqueSet.add(obj);
+        }
+    }
+
+    // Convert the unique set back to an array
+    const uniqueArray = Array.from(uniqueSet);
+
+    return uniqueArray;
 }
 
 exports.clientLogin = async (req, res) => {

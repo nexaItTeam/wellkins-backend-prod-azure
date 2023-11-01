@@ -60,17 +60,32 @@ exports.createClient = async (req, res) => {
 exports.createClients = async (req, res) => {
     try {
         const { clients } = req.body
-        // const find_mail = await findEmail(clients)
-        // console.log("find mails==", find_mail)
         const emails = []
         clients.forEach(data => {
             emails.push(data.client_email)
         });
+
         const find_client = await Client.findAll({
             where: {
                 client_email: emails
             }
         })
+        var arr_2 = []
+        find_client.forEach((data) => {
+            var temp = {
+                full_name: data.full_name,
+                password: data.password,
+                client_email: data.client_email,
+                contact_no: data.contact_no
+            }
+            arr_2.push(temp)
+        })
+        const combinedArray = clients.concat(arr_2)
+        
+        const uniqueArray = combinedArray.filter((obj, index, self) => {
+            return index === self.findIndex((o) => o.client_email === obj.client_email);
+        });
+        console.log("uniqueArray", uniqueArray)
         return res.status(200).json({
             message: "Success",
             find_client
@@ -82,20 +97,30 @@ exports.createClients = async (req, res) => {
     }
 }
 
-const findEmail = async (emails) => {
-    const email = emails.map((data) => {
-        return {
-            client_email: data.email
-        }
-    })
-    return Promise.all(email.maap(mail => Client.findAll(mail).Promise()))
-    // const find_email = await Client.findAll({
-    //     where: {
-    //         client_email: email
-    //     }
-    // })
+const findEmail = async (array1, array2) => {
+    const set1 = new Set(array1);
+    const set2 = new Set(array2);
+    // Create a new set for unique objects
+    const uniqueSet = new Set();
 
-    // return find_email
+    // Iterate through the first set and check for uniqueness
+    for (const obj of set1) {
+        if (!set2.has(obj)) {
+            uniqueSet.add(obj);
+        }
+    }
+
+    // Iterate through the second set and check for uniqueness
+    for (const obj of set2) {
+        if (!set1.has(obj)) {
+            uniqueSet.add(obj);
+        }
+    }
+
+    // Convert the unique set back to an array
+    const uniqueArray = Array.from(uniqueSet);
+
+    return uniqueArray;
 }
 
 exports.clientLogin = async (req, res) => {

@@ -60,40 +60,28 @@ exports.createClient = async (req, res) => {
 exports.createClients = async (req, res) => {
     try {
         const clients = req.body
-        console.log(clients)
-        // const find_mail = await findEmail(clients)
-        // console.log("find mails==", find_mail)
         const emails = []
         clients.forEach(data => {
-            emails.push(data.client_email)
+            emails.push(data)
         });
-        console.log(emails)
-        const find_client = await Client.findAll({
-            /*  where: {
-                 client_email: emails
-             } */
-        })
-        //console.log(find_client.findIndex(x => x.client_email =='tejas.d.talkar@gmail.com'))
-        const foundindex = []
+        const find_client = await Client.findAll()
         for (let i = 0; i < find_client.length; i++) {
-            var index = emails.findIndex(x => x == find_client[i].client_email)
+            var index = emails.findIndex(x => x.client_email == find_client[i].client_email)
             if (index != -1) {
                 emails.splice(index, 1)
             }
         }
-        /* for(let i= 0; i < foundindex.length ; i ++){
-         find_client.splice(foundindex[i],1)
-        } */
-
-        emails.forEach((data) => {
-            console.log("===",data)
-            var temp 
+        await Client.bulkCreate(emails).then((resp) => {
+            return res.status(200).json({
+                message: "Success",
+                resp
+            })
+        }).catch((err) => {
+            return res.status(400).json({
+                message: "Success",
+                err
+            })
         })
-
-        // return res.status(200).json({
-        //     message: "Success",
-        //     emails
-        // })
     } catch (error) {
         console.log(error)
         return res.status(500).json({
@@ -105,24 +93,21 @@ exports.createClients = async (req, res) => {
 const findEmail = async (array1, array2) => {
     const set1 = new Set(array1);
     const set2 = new Set(array2);
-    // Create a new set for unique objects
+
     const uniqueSet = new Set();
 
-    // Iterate through the first set and check for uniqueness
     for (const obj of set1) {
         if (!set2.has(obj)) {
             uniqueSet.add(obj);
         }
     }
 
-    // Iterate through the second set and check for uniqueness
     for (const obj of set2) {
         if (!set1.has(obj)) {
             uniqueSet.add(obj);
         }
     }
 
-    // Convert the unique set back to an array
     const uniqueArray = Array.from(uniqueSet);
 
     return uniqueArray;

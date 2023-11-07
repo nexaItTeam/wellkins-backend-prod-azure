@@ -10,6 +10,9 @@ module.exports = (sequelize, DataTypes) => {
             Property.hasOne(models.Order, {
                 foreignKey: "prop_id",
             })
+            Property.hasOne(models.Favourite, {
+                foreignKey: "prop_id",
+            })
         }
     }
 

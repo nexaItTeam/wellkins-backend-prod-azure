@@ -6,6 +6,9 @@ module.exports = (sequelize, DataTypes) => {
             Client.hasOne(models.Order, {
                 foreignKey: "client_id",
             })
+            Client.hasOne(models.Favourite, {
+                foreignKey: "user_id",
+            })
         }
     }
     Client.init({

@@ -136,7 +136,7 @@ exports.addEnqForm = async (req, res) => {
             await Enquiry_form.create(enq_form).then(async (resp) => {
                 if (enq_form.isDraft != true) {
                     const order_id = generateUniqueId({
-                        length: 10,
+                        length: 8,
                         useLetters: false
                     })
                     var temp = {
@@ -153,6 +153,7 @@ exports.addEnqForm = async (req, res) => {
                             message: "order place successfully"
                         })
                     }).catch((err) => {
+                        console.log(err)
                         return res.status(400).json({
                             message: "failed to create order"
                         })
@@ -163,6 +164,7 @@ exports.addEnqForm = async (req, res) => {
                     })
                 }
             }).catch((err) => {
+                console.log(err)
                 return res.status(400).json({
                     message: "failed to create enquery form"
                 })

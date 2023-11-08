@@ -140,7 +140,7 @@ exports.addEnqForm = async (req, res) => {
                         useLetters: false
                     })
                     var temp = {
-                        order_id: order_id + enq_form.client_id,
+                        order_id: enq_form.prop_id + order_id,
                         enq_form_id: enq_form.id || resp.id,
                         client_id: enq_form.client_id,
                         prop_id: enq_form.prop_id,

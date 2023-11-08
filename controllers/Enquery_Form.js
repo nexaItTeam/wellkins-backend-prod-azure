@@ -237,7 +237,7 @@ exports.updateEnqForm = async (req, res) => {
                 useLetters: false
             })
             var temp = {
-                order_id: order_id,
+                order_id: enq_form.prop_id + order_id,
                 enq_form_id: enq_form.id,
                 client_id: enq_form.client_id,
                 prop_id: enq_form.prop_id,

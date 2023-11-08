@@ -235,7 +235,7 @@ exports.updateEnqForm = async (req, res) => {
         )
         if (enq_form.isDraft != true) {
             const order_id = generateUniqueId({
-                length: 10,
+                length: 8,
                 useLetters: false
             })
             var temp = {
@@ -253,6 +253,7 @@ exports.updateEnqForm = async (req, res) => {
                     update_form
                 })
             }).catch((err) => {
+                console.log(err)
                 return res.status(400).json({
                     message: "failed to create order"
                 })

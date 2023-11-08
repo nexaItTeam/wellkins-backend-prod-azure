@@ -1,9 +1,10 @@
 const { Favourite } = require('../models')
+const db = require('../models')
 const model = require('../models')
 const { azureEmailService, thankyouEmail } = require('../service/azureEmail')
 
 exports.getAllFavourites = async (req, res) => {
-    try {  
+    try {
         var getAllFavourites = await Favourite.findAndCountAll({
             where: {
                 user_id: req.body.user_id
@@ -18,7 +19,7 @@ exports.getAllFavourites = async (req, res) => {
                     as: 'user_data'
                 }
             ]
-            
+
         })
         if (!getAllFavourites) {
             return res.status(404).json({
@@ -42,19 +43,24 @@ exports.getAllFavourites = async (req, res) => {
 exports.addFavourites = async (req, res) => {
     try {
         const { favourite } = req.body
-        var create_enq = await Favourite.create(favourite)
-        if (!create_enq) {
-            return res.status(404).json({
-                message: "failed to create"
-            })
-        } else {
-            
-           
+        var findFav = await db.sequelize.query(`SELECT * FROM nexa_capital.favourites where user_id=${favourite.user_id} and prop_id = ${favourite.prop_id};`)
+        console.log(findFav)
+        if (findFav[0].length == 0) {
+            var create_enq = await Favourite.create(favourite)
+            if (!create_enq) {
+                return res.status(404).json({
+                    message: "failed to create"
+                })
+            } else {
                 return res.status(200).json({
                     message: "created",
                     create_enq
                 })
-            
+            }
+        } else {
+            return res.status(200).json({
+                message: "Property already exist in your Favourite List",
+            })
         }
     } catch (error) {
         console.log(error)
@@ -63,6 +69,7 @@ exports.addFavourites = async (req, res) => {
             error
         })
     }
+
 }
 
 
@@ -75,7 +82,7 @@ exports.deleteFavourite = async (req, res) => {
                 message: "Data not found"
             })
         } else {
-            Favourite.destroy( {
+            Favourite.destroy({
                 where: {
                     id: fav_id
                 }

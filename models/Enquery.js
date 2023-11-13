@@ -55,6 +55,10 @@ module.exports = (sequelize, DataTypes) => {
         assignTo: {
             type: DataTypes.INTEGER,
             field: 'assignTo'
+        },
+        fund_type: {
+            type: DataTypes.STRING,
+            field: 'fund_type'
         }
     }, {
         sequelize,

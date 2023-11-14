@@ -94,6 +94,10 @@ module.exports = (sequelize, DataTypes) => {
         first_installment_price: {
             type: DataTypes.INTEGER,
             field: 'first_installment_price'
+        },
+        prop_vote_count: {
+            type: DataTypes.INTEGER,
+            field: 'prop_vote_count'
         }
     }, {
         sequelize,

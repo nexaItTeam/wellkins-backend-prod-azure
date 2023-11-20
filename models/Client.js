@@ -50,6 +50,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             field: 'isFirst',
             defaultValue: true,
+        },
+        client_type: {
+            type: DataTypes.INTEGER,
+            field: 'client_type'
         }
     }, {
         sequelize,

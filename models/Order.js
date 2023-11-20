@@ -43,6 +43,11 @@ module.exports = (sequelize, DataTypes) => {
         investing_amount: {
             type: DataTypes.INTEGER,
             field: 'investing_amount'
+        },
+        isEamil: {
+            type: DataTypes.BOOLEAN,
+            field: 'isEamil',
+            defaultValue: false,
         }
     }, {
         sequelize,

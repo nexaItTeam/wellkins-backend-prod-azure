@@ -5,6 +5,7 @@ const imgUpload = require('../middleware/ImmgUpload')
 const { azureUpload } = require('../service/azure')
 const generateUniqueId = require('generate-unique-id');
 const db = require('../models');
+const { invoice_Mail } = require('../service/azureEmail')
 
 // get all form
 exports.getAllOrder = async (req, res) => {
@@ -148,9 +149,15 @@ exports.addEnqForm = async (req, res) => {
                         investing_amount: enq_form.investing_amount,
                         paidStatus: enq_form.paidStatus
                     }
-                    await Order.create(temp).then(() => {
-                        return res.status(200).json({
-                            message: "order place successfully"
+                    await Order.create(temp).then(async (resp) => {
+                        await getOrder(resp.id).then((result) => {
+                            console.log(result)
+
+                            return res.status(200).json({
+                                message: "order place successfully",
+                                resp,
+                                order: result
+                            })
                         })
                     }).catch((err) => {
                         console.log(err)
@@ -178,45 +185,64 @@ exports.addEnqForm = async (req, res) => {
     }
 }
 
-// get order
-exports.getOrder = async (req, res) => {
+exports.invoiceEmail = async (req, res) => {
     try {
-        var get_order = await Order.findAll({
+        var email = req.body
+        await invoice_Mail(email).then(() => {
+            return res.status(200).json({
+                message: "email send successfully"
+            })
+        }).catch((e) => {
+            return res.status(400).json({
+                message: e
+            })
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "server error"
+        })
+    }
+}
+// get order
+const getOrder = async (id) => {
+    try {
+
+        var get_order = await Order.findOne({
             where: {
-                client_id: req.body.client_id
+                id: id
             },
             include: [
                 {
-                    model: model.Enquiry_form,
-                    as: 'enq_foem_data'
+                    model: model.Property,
+                    as: 'enq_prop_data'
                 },
                 {
                     model: model.Client,
                     as: 'enq_client_data'
                 },
                 {
-                    model: model.Property,
-                    as: 'enq_prop_data'
+                    model: model.Enquiry_form,
+                    as: 'enq_form_data'
                 }
             ]
         })
 
-        if (!get_order) {
-            return res.status(200).json({
-                message: "Data not found",
-            })
-        } else {
-            return res.status(200).json({
-                message: "Success",
-                get_order
-            })
+        var mail_temp = {
+            Date: new Date(),
+            contactno: contact_no,
+            email: client_email,
+            Address: ""
         }
+        var mail_temp = {
+            referenceNO: 77777,
+            classUnit: 2,
+            email: client_email,
+            Address: ""
+        }
+
+        return get_order
     } catch (error) {
-        console.log(error)
-        res.status(500).json({
-            message: "Server Error",
-            error
-        })
+        return error
     }
 }
 

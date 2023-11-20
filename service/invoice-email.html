@@ -1,0 +1,240 @@
+<html lang="en">
+
+<head>
+    <title>Welkins Invoice</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<style>
+    body {
+        background-color: #fff !important;
+    }
+</style>
+
+<body style="background-color: #fff;">
+    <section style="background-color: #fff;">
+        <div class="container" id="invoice">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-md-12">
+                    <div class="card">
+                        <div class="invoice-body" style="border-color: #0000002d;">
+                            <div class="container mb-5 mt-3">
+                                <div class="row d-flex align-items-baseline mb-3">
+                                    <div class="col-xl-4">
+                                        <img class="pb-3"
+                                            src="https://wellkinsstorageprod.blob.core.windows.net/assist/wellkins-logo.png"
+                                            alt="Logo" width="200">
+                                        <p style="color:black"><strong>WELKINS CAPITAL LIMITED</strong> <br>
+                                            ABN 12 608 424 488 <br />
+                                            AFSL 482375
+                                        </p>
+                                    </div>
+                                    <div class="col-xl-8  text-end">
+                                        <h3 class=" text-end" style="color:black">INVESTMENT APPLICATION</h3>
+                                        <h5 class=" text-end" style="color:black">Wellkins Capital Fund (ARSN 614
+                                            577 276)</h5>
+                                        <ul class="list-unstyled"
+                                            style="max-width: 300px; margin-left: auto; margin-top: 20px;">
+                                            <li class="text-muted d-flex justify-content-between">
+                                                <div><span style="color:black " class="fw-bold">Investment Date
+                                                        :</span></div>
+                                                <div style="color:black">{{Date}}</div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="container">
+                                    <div class="row my-4">
+                                        <div class="col-xl-5">
+                                            <h5 style="color:black" class="fw-bold">{{name}}
+                                            </h5>
+                                            <ul class="list-unstyled" style="max-width: 200px; margin-right: auto;">
+                                                <li class="text-muted d-flex justify-content-between">
+                                                    <div><span class="fw-bold" style="color:black">Phone:</span> {{
+                                                        contactno
+                                                        }} </div>
+                                                    <div style="color:black"></div>
+                                                </li>
+                                                <li class="text-muted d-flex justify-content-between">
+                                                    <div>
+                                                        <span class="fw-bold" style="color:black">Email:</span>
+                                                        {{email}}
+                                                    </div>
+
+                                                </li>
+                                                <li class="text-muted d-flex justify-content-between">
+                                                    <div><span class="fw-bold" style="color:black">Address:</span>
+                                                        {{address}}</div>
+
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-xl-7 text-end">
+                                            <ul class="list-unstyled">
+                                                <h5 class="fw-bold" style="color:black"><strong>INVESTMENT
+                                                        METHOD</strong></h5>
+                                                <p class="fw-bold" style="color:black;font-weight: bold;">
+                                                    <strong>Please deposit your investment monies to :</strong>
+                                                </p>
+
+
+                                                <div style="color:black">Perpetual Corporate Trust Limited
+                                                    -ACF-Wellkins Capital Limited</div>
+
+                                                <li class="text-muted d-flex justify-content-between">
+                                                    <div><span class="fw-bold" style="color:black">Account No
+                                                            :</span></div>
+                                                    <div style="color:black">899667216</div>
+                                                </li>
+                                                <li class="text-muted d-flex justify-content-between">
+                                                    <div><span class="fw-bold" style="color:black">BSB :</span>
+                                                    </div>
+                                                    <div style="color:black">082057</div>
+                                                </li>
+                                                <li class="text-muted d-flex justify-content-between">
+                                                    <div><span style="color:black" class="fw-bold">Reference No
+                                                            :</span></div>
+                                                    <div style="color:black">{{refno
+                                                        }}</div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <div class="row my-2 justify-content-center" style="font-size: 16px;">
+                                        <table class="table table-borderless mb-3">
+                                            <thead style="background-color:#c2272d ;" class="text-black">
+                                                <tr style="background-color:#c2272d ; color: #fff;">
+                                                    <th style="background-color:#c2272d; color: #fff;" scope="col">
+                                                        Description</th>
+                                                    <th style="background-color:#c2272d; color: #fff;" scope="col">
+                                                        Price per share</th>
+                                                    <th style="background-color:#c2272d; color: #fff;" scope="col">
+                                                        Units</th>
+                                                    <th style="background-color:#c2272d; color: #fff;" scope="col">
+                                                        Monies Due to Be Paid</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="row">Wellkins Capital Fund <br> Class of Units :
+                                                        {{invoiceInfo[0].enq_prop_data.property_name}}
+                                                    </th>
+                                                    <td>
+                                                        {{price_per_share | currency:'USD'}}
+                                                    </td>
+                                                    <td>
+                                                        {{units}}
+                                                    </td>
+                                                    <td>
+                                                        {{Monies_Due | currency : 'USD' }}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+
+                                        </table>
+                                        <div style="border: 1.5px solid #c2272d"></div>
+                                    </div>
+                                    <div class="row mt-5" style="font-size: 16px;">
+                                        <div class="col-xl-6">
+                                            <p class="mb-3" style="color:black"><strong>TERMS AND
+                                                    CONDITIONS</strong></p>
+
+                                            <p style="color:black;font-weight: bold">Investment applications in the
+                                                Wellkins Capital Fund will not be processed until cleared funds are
+                                                received in full.
+                                                <br> An investment in the Wellkins Capital Fund is not active until
+                                                confirmed by Wellkins Capital Limited as responsible entity of the
+                                                Wellkins
+                                                Capital Fund.<br> You will receive a certificate of investment upon
+                                                confirmation by Wellkins Capital Limited.
+                                            </p>
+
+                                        </div>
+                                        <div class="col-xl-6 text-end">
+                                            <ul class="list-unstyled"
+                                                style="max-width: 300px; margin-left: auto; margin-top: 20px;">
+                                                <li class="text-muted ms-3  d-flex justify-content-between">
+                                                    <div style="color: black;"><strong>SubTotal</strong></div>
+                                                    <div style="color: black;">{{Monies_Due |
+                                                        currency : 'USD' }}</div>
+                                                </li>
+                                                <li class="text-muted ms-3 mt-2  d-flex justify-content-between">
+                                                    <div style="color: black;"><strong>Immediately</strong></div>
+                                                    <div style="color: black;">{{ immediate_payment | currency :
+                                                        'USD' }}</div>
+                                                </li>
+
+                                                <li class="text-muted ms-3 mt-3  d-flex justify-content-between">
+                                                    <div style="color: black;"><strong>Next
+                                                            Installment</strong></div>
+                                                    <div style="color: black;">{{next_installment | currency :'USD' }}
+                                                    </div>
+                                                </li>
+
+                                                <li class="text-muted ms-2 mt-3   d-flex justify-content-between"
+                                                    style="background-color: #c2272d;">
+                                                    <div style="color: #fff;"><strong>Due Now</strong></div>
+                                                    <div style="color: #fff;"> {{ immediate_payment | currency :
+                                                        'USD' }} </div>
+                                                </li>
+
+                                            </ul>
+
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <table class="table table-borderless mb-3">
+                                        <thead style="background-color:#c2272d ;" class="text-black">
+                                            <tr style="background-color:#c2272d ; color: #fff;">
+                                                <th style="background-color:#c2272d; color: #fff;text-align: center;font-style: italic;font-size: 15px;"
+                                                    scope="col">
+                                                    Kindly ignore this investment application if you have already
+                                                    made the payment.</th>
+                                            </tr>
+                                        </thead>
+                                    </table>
+                                    <div class="row" style="font-size: 16px;">
+                                        <div class="col-xl-10">
+                                            <p style="text-transform: uppercase; color:black"><strong>Thank you for
+                                                    your
+                                                    Investment</strong></p>
+                                            <ul class="list-unstyled">
+                                                <li><span style="color: #c2272d;"><i
+                                                            class="k-icon k-font-icon k-i-user"></i> 02 9119
+                                                        4947</span> </li>
+                                                <li><span style="color: #c2272d;"><i
+                                                            class="k-icon k-font-icon k-i-envelope "></i>
+                                                        info@wellkins.com.au</span>
+                                                </li>
+                                                <li><span style="color: #c2272d;"><i
+                                                            class=" k-icon k-font-icon k-i-globe "></i>
+                                                        www.wellkins.com.au</span>
+                                                <li><span style="color: #c2272d;"><i
+                                                            class="k-icon k-font-icon k-i-map-marker"></i> 4.01/5
+                                                        Celebration Drive, Bella Vista NSW 2153 </span>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                    <div class="asterix--after"
+                                        style="font-weight: bold;text-align:center; font-style: italic; font-size: 15px;color: black;">
+                                        To ensure a timely allocation of your investment
+                                        monies, please deposit your investment monies as
+
+                                        soon as possible. Thank you.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

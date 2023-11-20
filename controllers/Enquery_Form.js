@@ -185,9 +185,12 @@ exports.addEnqForm = async (req, res) => {
     }
 }
 
+
+
 exports.invoiceEmail = async (req, res) => {
     try {
         var email = req.body
+        // console.log("=======", email)
         await invoice_Mail(email).then(() => {
             return res.status(200).json({
                 message: "email send successfully"

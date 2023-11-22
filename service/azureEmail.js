@@ -3,8 +3,6 @@ const Mailgen = require('mailgen');
 require("dotenv").config();
 
 const azureEmailService = async (body) => {
-    // This code demonstrates how to fetch your connection string
-    // from an environment variable.
     const connectionString = process.env['COMMUNICATION_SERVICES_CONNECTION_STRING'];
     const emailClient = new EmailClient(connectionString);
     try {
@@ -28,28 +26,96 @@ const azureEmailService = async (body) => {
         return Promise.all(messages.map(
             (message) => emailClient.beginSend(message)
         ))
-
-        // const message = {
-        //     senderAddress: "<info@wellkins.com.au>",
-        //     content: {
-        //         subject: "Welcome to Azure Communication Services Email",
-        //         plainText: "This email message is sent from Azure Communication Services Email using the JavaScript SDK.",
-        //     },
-        //     recipients: {
-        //         to: [
-        //             {
-        //                 address: body.user_email,
-        //                 displayName: "Customer Name",
-        //             },
-        //         ],
-        //     }
-        // };
-        // const poller = await emailClient.beginSend(message);
-        // const result = await poller.pollUntilDone();
-        // return result
     } catch (e) {
         console.log(e);
         return e
+    }
+}
+
+const multipleAccount = async (body) => {
+    const connectionString = process.env['COMMUNICATION_SERVICES_CONNECTION_STRING'];
+    const emailClient = new EmailClient(connectionString);
+    try {
+        const messages = body.map(file => {
+            return {
+                senderAddress: "<info@wellkins.com.au>",
+                content: {
+                    subject: "Account Create",
+                    html: `<p>Dear <strong>${file.full_name}</strong>,</p>
+                            <p>Your Wellkins Investment&nbsp;account has been activated.</p>
+                            <p>Please save the below login details for your future reference. The password can be changed after first login.</p>
+                            <p>Login Id: <strong>${file.client_email}</strong></p>
+                            <p>Password: <strong>${file.password}</strong></p>
+                            <p>Client ID: <strong>${file.client_id}</strong></p>
+                            <p><a href='https://client.wellkins.com.au/login'><strong>Click to login into your account</strong></a></p>
+                            <p>&nbsp;</p>
+                            <p>Thanks &amp; Regards,</p>
+                            <p><span style="font-size:16px"><strong>Team Wellkins Capital</strong></span></p>
+                            <p><a href="https://wellkins.com.au/" rel="noopener noreferrer" target="_blank" title="&quot;https://wellkins.com.au/&quot; t ">
+                            <strong><em><img src="https://wellkinsstorageprod.blob.core.windows.net/assist/LOGO.png" style="height:32px; width:127px" /></em></strong></a></p>
+                            <h4>T: 02 9119 4947</h4>
+                            <h4>E:&nbsp;<a href="mailto:info@wellkins.com.au">info@wellkins.com.au</a></h4>
+                            <h4>W<strong>:</strong>&nbsp;<a href="https://wellkins.com.au/" rel="noopener noreferrer" target="_blank">https://wellkins.com.au/</a><br />
+                            A<strong>:&nbsp;&nbsp;</strong>4.01/5 Celebration Drive,&nbsp;Bella Vista&nbsp;NSW 2153</h4>`,
+                },
+                recipients: {
+                    to: [
+                        {
+                            address: file.client_email,
+                            displayName: "Customer Name",
+                        },
+                    ],
+                }
+            }
+        })
+        return Promise.all(messages.map(
+            (message) => emailClient.beginSend(message)
+        ))
+    } catch (e) {
+        console.log(e);
+        return e
+    }
+}
+
+const accountCreate = async (body) => {
+    const connectionString = process.env['COMMUNICATION_SERVICES_CONNECTION_STRING'];
+    const emailClient = new EmailClient(connectionString);
+    try {
+        const message = {
+            senderAddress: "<info@wellkins.com.au>",
+            content: {
+                subject: "Account Create",
+                html: `<p>Dear <strong>${body.client_name}</strong>,</p>
+                <p>Your Wellkins Investment&nbsp;account has been activated.</p>
+                <p>Please save the below login details for your future reference. The password can be changed after first login.</p>
+                <p>Login Id: <strong>${body.client_email}</strong></p>
+                <p>Password: <strong>${body.password}</strong></p>
+                <p>Client ID: <strong>${body.client_id}</strong></p>
+                <p><a href='https://client.wellkins.com.au/login'><strong>Click to login into your account</strong></a></p>
+                <p>&nbsp;</p>
+                <p>Thanks &amp; Regards,</p>
+                <p><span style="font-size:16px"><strong>Team Wellkins Capital</strong></span></p>
+                <p><a href="https://wellkins.com.au/" rel="noopener noreferrer" target="_blank" title="&quot;https://wellkins.com.au/&quot; t ">
+                <strong><em><img src="https://wellkinsstorageprod.blob.core.windows.net/assist/LOGO.png" style="height:32px; width:127px" /></em></strong></a></p>
+                <h4>T: 02 9119 4947</h4>
+                <h4>E:&nbsp;<a href="mailto:info@wellkins.com.au">info@wellkins.com.au</a></h4>
+                <h4>W<strong>:</strong>&nbsp;<a href="https://wellkins.com.au/" rel="noopener noreferrer" target="_blank">https://wellkins.com.au/</a><br />
+                A<strong>:&nbsp;&nbsp;</strong>4.01/5 Celebration Drive,&nbsp;Bella Vista&nbsp;NSW 2153</h4>`,
+            },
+            recipients: {
+                to: [
+                    {
+                        address: body.client_email,
+                        displayName: "Customer Name",
+                    },
+                ],
+            }
+        };
+        const poller = await emailClient.beginSend(message);
+        const result = await poller.pollUntilDone();
+        return result
+    } catch (error) {
+        return error
     }
 }
 
@@ -132,50 +198,9 @@ const thankyouEmail = async (body) => {
     }
 }
 
-const accountCreate = async (body) => {
-    const connectionString = process.env['COMMUNICATION_SERVICES_CONNECTION_STRING'];
-    const emailClient = new EmailClient(connectionString);
-    try {
-        const message = {
-            senderAddress: "<info@wellkins.com.au>",
-            content: {
-                subject: "Account Create",
-                html: `<p>Dear <strong>${body.client_name}</strong>,</p>
-                <p>Your Wellkins Investment&nbsp;account has been activated.</p>
-                <p>Please save the below login details for your future reference. The password can be changed after first login.</p>
-                <p>Login Id: <strong>${body.client_email}</strong></p>
-                <p>Password: <strong>${body.password}</strong></p>
-                <p>Client ID: <strong>${body.client_id}</strong></p>
-                <p><a href='https://client.wellkins.com.au/login'><strong>Click to login into your account</strong></a></p>
-                <p>&nbsp;</p>
-                <p>Thanks &amp; Regards,</p>
-                <p><span style="font-size:16px"><strong>Team Wellkins Capital</strong></span></p>
-                <p><a href="https://wellkins.com.au/" rel="noopener noreferrer" target="_blank" title="&quot;https://wellkins.com.au/&quot; t ">
-                <strong><em><img src="https://wellkinsstorageprod.blob.core.windows.net/assist/LOGO.png" style="height:32px; width:127px" /></em></strong></a></p>
-                <h4>T: 02 9119 4947</h4>
-                <h4>E:&nbsp;<a href="mailto:info@wellkins.com.au">info@wellkins.com.au</a></h4>
-                <h4>W<strong>:</strong>&nbsp;<a href="https://wellkins.com.au/" rel="noopener noreferrer" target="_blank">https://wellkins.com.au/</a><br />
-                A<strong>:&nbsp;&nbsp;</strong>4.01/5 Celebration Drive,&nbsp;Bella Vista&nbsp;NSW 2153</h4>`,
-            },
-            recipients: {
-                to: [
-                    {
-                        address: body.client_email,
-                        displayName: "Customer Name",
-                    },
-                ],
-            }
-        };
-        const poller = await emailClient.beginSend(message);
-        const result = await poller.pollUntilDone();
-        return result
-    } catch (error) {
-        return error
-    }
-}
+
 
 const invoice_Mail = async (body) => {
-    console.log("cgvccghgh", body)
     const connectionString = process.env['COMMUNICATION_SERVICES_CONNECTION_STRING'];
     const emailClient = new EmailClient(connectionString);
     try {
@@ -217,7 +242,7 @@ const invoice_Mail = async (body) => {
                                                         </div>
                                                         <div class="col-xl-8  text-end">
                                                             <h3 class=" text-end" style="color:black">INVESTMENT APPLICATION</h3>
-                                                            <h5 class=" text-end" style="color:black">Wellkins Capital Fund (ARSN 614
+                                                            <h5 class=" text-end" style="color:black">Wellkins Capital Limited (ARSN 614
                                                                 577 276)</h5>
                                                             <ul class="list-unstyled"
                                                                 style="max-width: 300px; margin-left: auto; margin-top: 20px;">
@@ -294,7 +319,7 @@ const invoice_Mail = async (body) => {
                                                                         <th style="background-color:#c2272d; color: #fff;" scope="col">
                                                                             Description</th>
                                                                         <th style="background-color:#c2272d; color: #fff;" scope="col">
-                                                                            Price per share</th>
+                                                                            Price per unit</th>
                                                                         <th style="background-color:#c2272d; color: #fff;" scope="col">
                                                                             Units</th>
                                                                         <th style="background-color:#c2272d; color: #fff;" scope="col">
@@ -303,7 +328,7 @@ const invoice_Mail = async (body) => {
                                                                 </thead>
                                                                 <tbody>
                                                                     <tr>
-                                                                        <th scope="row">Wellkins Capital Fund <br> Class of Units :
+                                                                        <th scope="row">Wellkins Capital Limited <br> Class of Units :
                                                                             ${body.email.property_name}
                                                                         </th>
                                                                         <td>
@@ -325,12 +350,12 @@ const invoice_Mail = async (body) => {
                                                                 <p class="mb-3" style="color:black"><strong>TERMS AND
                                                                         CONDITIONS</strong></p>
                                                                 <p style="color:black;font-weight: bold">Investment applications in the
-                                                                    Wellkins Capital Fund will not be processed until cleared funds are
+                                                                    Wellkins Capital Limited will not be processed until cleared Limited are
                                                                     received in full.
-                                                                    <br> An investment in the Wellkins Capital Fund is not active until
+                                                                    <br> An investment in the Wellkins Capital Limited is not active until
                                                                     confirmed by Wellkins Capital Limited as responsible entity of the
                                                                     Wellkins
-                                                                    Capital Fund.<br> You will receive a certificate of investment upon
+                                                                    Capital Limited.<br> You will receive a certificate of investment upon
                                                                     confirmation by Wellkins Capital Limited.
                                                                 </p>
                                                             </div>
@@ -429,4 +454,4 @@ const invoice_Mail = async (body) => {
 }
 
 
-module.exports = { azureEmailService, forgotPassword, thankyouEmail, accountCreate, invoice_Mail }
+module.exports = { azureEmailService, forgotPassword, thankyouEmail, accountCreate, invoice_Mail, multipleAccount }

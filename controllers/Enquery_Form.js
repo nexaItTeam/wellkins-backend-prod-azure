@@ -189,12 +189,25 @@ exports.addEnqForm = async (req, res) => {
 
 exports.invoiceEmail = async (req, res) => {
     try {
-        var email = req.body
-        // console.log("=======", email)
-        await invoice_Mail(email).then(() => {
-            return res.status(200).json({
-                message: "email send successfully"
-            })
+        var { email } = req.body
+        console.log(email.id)
+        await invoice_Mail(email).then(async () => {
+            const updat_order = await Order.update(
+                {
+                    isEamil: false
+                },
+                {
+                    where: {
+                        id: email.id
+                    }
+                }
+            )
+            if (updat_order) {
+                return res.status(200).json({
+                    message: "email send successfully",
+                    updat_order
+                })
+            }
         }).catch((e) => {
             return res.status(400).json({
                 message: e

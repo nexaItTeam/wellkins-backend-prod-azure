@@ -4,7 +4,7 @@ const { createTokens } = require("../middleware/JWT")
 // const ShortUniqueId = require('short-unique-id');
 const generateUniqueId = require('generate-unique-id');
 const { mailGenerator } = require('../service/nodemailer')
-const { azureEmailService, forgotPassword, accountCreate } = require('../service/azureEmail')
+const { azureEmailService, forgotPassword, accountCreate, multipleAccount } = require('../service/azureEmail')
 
 exports.createClient = async (req, res) => {
     try {
@@ -61,11 +61,13 @@ exports.createClient = async (req, res) => {
 
 exports.createClients = async (req, res) => {
     try {
-        const clients = req.body
+        const { clients } = req.body
+
         const emails = []
         clients.forEach(data => {
             emails.push(data)
         });
+
         const find_client = await Client.findAll()
         for (let i = 0; i < find_client.length; i++) {
             var index = emails.findIndex(x => x.client_email == find_client[i].client_email)
@@ -73,10 +75,32 @@ exports.createClients = async (req, res) => {
                 emails.splice(index, 1)
             }
         }
-        await Client.bulkCreate(emails).then((resp) => {
-            return res.status(200).json({
-                message: "Success",
-                resp
+
+        var payload = []
+        emails.forEach(data => {
+            const id = generateUniqueId({
+                length: 6,
+                useLetters: false
+            });
+            bcrypt.hash(data.password, 10).then((hash) => {
+                var temp = {
+                    full_name: data.full_name,
+                    password: hash,
+                    client_email: data.client_email,
+                    contact_no: data.contact_no,
+                    client_id: id,
+                }
+                payload.push(temp)
+                console.log(temp)
+            })
+        })
+        // console.log(payload)
+        await Client.bulkCreate(payload).then(async (resp) => {
+            await multipleAccount(emails).then(() => {
+                return res.status(200).json({
+                    message: "Success",
+                    resp
+                })
             })
         }).catch((err) => {
             return res.status(400).json({

@@ -44,6 +44,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'investing_amount'
         },
+        holder_type: {
+            type: DataTypes.STRING,
+            field: 'holder_type'
+        },
         isEamil: {
             type: DataTypes.BOOLEAN,
             field: 'isEamil',

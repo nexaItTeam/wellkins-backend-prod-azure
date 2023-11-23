@@ -64,7 +64,7 @@ exports.createClients = async (req, res) => {
         const { clients } = req.body
 
         const emails = []
-        clients.forEach(data => {
+        await clients.forEach(data => {
             emails.push(data)
         });
 
@@ -75,38 +75,41 @@ exports.createClients = async (req, res) => {
                 emails.splice(index, 1)
             }
         }
-
+        //  console.log(emails)
         var payload = []
-        emails.forEach(data => {
+       
+        for await (let email of emails) {
+            console.log("2", email)
             const id = generateUniqueId({
                 length: 6,
                 useLetters: false
             });
-            bcrypt.hash(data.password, 10).then((hash) => {
+           await bcrypt.hash(email.password, 10).then((hash) => {
                 var temp = {
-                    full_name: data.full_name,
+                    full_name: email.full_name,
                     password: hash,
-                    client_email: data.client_email,
-                    contact_no: data.contact_no,
+                    client_email: email.client_email,
+                    contact_no: email.contact_no,
                     client_id: id,
                 }
                 payload.push(temp)
-                console.log(temp)
             })
-        })
-        // console.log(payload)
+        }
+
         await Client.bulkCreate(payload).then(async (resp) => {
-            await multipleAccount(emails).then(() => {
-                return res.status(200).json({
+             await multipleAccount(emails).then(() => {
+                console.log(resp)
+                 return res.status(200).json({
                     message: "Success",
                     resp
                 })
-            })
+             })
         }).catch((err) => {
-            return res.status(400).json({
-                message: "Success",
-                err
-            })
+            console.log(err)
+             return res.status(400).json({
+                 message: "Success",
+                 err
+             })
         })
     } catch (error) {
         console.log(error)

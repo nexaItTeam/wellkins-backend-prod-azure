@@ -140,7 +140,6 @@ exports.addEnqForm = async (req, res) => {
             await Enquiry_form.create(enq_form).then(async (enq_resp) => {
                 if (enq_form.isDraft != true) {
                     // create clients
-                    console.log("1")
                     if (enq_form.investor_form_type === "Individual") {
                         console.log("2")
                         const emails = []
@@ -208,10 +207,9 @@ exports.addEnqForm = async (req, res) => {
                                     paidStatus: enq_form.paidStatus
                                 }
                                 order_payload.push(main_holder)
-                                console.log("order payload 2", order_payload.length == 1)
+
                                 if (order_payload.length == 1) {
 
-                                    console.log("3")
                                     var existing_email = []
                                     enq_form.clients.forEach((data) => {
                                         existing_email.push(data.client_email)
@@ -237,7 +235,6 @@ exports.addEnqForm = async (req, res) => {
                                         order_payload.push(joint_holder)
                                     }
                                 }
-                                console.log("==1=1=1=1=1=", order_payload)
                                 // order create
                                 await Order.bulkCreate(order_payload).then(async (resp) => {
                                     console.log("4")
@@ -401,30 +398,176 @@ exports.updateEnqForm = async (req, res) => {
             }
         )
         if (enq_form.isDraft != true) {
-            const order_id = generateUniqueId({
-                length: 8,
-                useLetters: false
-            })
-            var temp = {
-                order_id: enq_form.prop_id + order_id,
-                enq_form_id: enq_form.id,
-                client_id: enq_form.client_id,
-                prop_id: enq_form.prop_id,
-                paidStatus: enq_form.paidStatus,
-                investing_amount: enq_form.investing_amount,
-                paidStatus: enq_form.paidStatus
+            // const order_id = generateUniqueId({
+            //     length: 8,
+            //     useLetters: false
+            // })
+            // var temp = {
+            //     order_id: enq_form.prop_id + order_id,
+            //     enq_form_id: enq_form.id,
+            //     client_id: enq_form.client_id,
+            //     prop_id: enq_form.prop_id,
+            //     paidStatus: enq_form.paidStatus,
+            //     investing_amount: enq_form.investing_amount,
+            //     paidStatus: enq_form.paidStatus
+            // }
+            // await Order.create(temp).then(() => {
+            //     return res.status(200).json({
+            //         message: "order place successfully",
+            //         update_form
+            //     })
+            // }).catch((err) => {
+            //     console.log(err)
+            //     return res.status(400).json({
+            //         message: "failed to create order"
+            //     })
+            // })
+            if (enq_form.investor_form_type === "Individual") {
+                console.log("2")
+                const emails = []
+                await enq_form.clients.forEach(data => {
+                    emails.push(data)
+                });
+
+                const find_client = await Client.findAll()
+                for (let i = 0; i < find_client.length; i++) {
+                    var index = emails.findIndex(x => x.client_email == find_client[i].client_email)
+                    if (index != -1) {
+                        emails.splice(index, 1)
+                    }
+                }
+                //  console.log(emails)
+                var payload = []
+                for await (let email of emails) {
+                    const id = generateUniqueId({
+                        length: 6,
+                        useLetters: false
+                    });
+                    await bcrypt.hash(email.password, 10).then((hash) => {
+                        var temp = {
+                            full_name: email.full_name,
+                            password: hash,
+                            client_email: email.client_email,
+                            contact_no: email.contact_no,
+                            client_id: id,
+                        }
+                        payload.push(temp)
+                    })
+                }
+                await Client.bulkCreate(payload).then(async (resp) => {
+                    await multipleAccount(emails).then(async () => {
+                        let order_payload = []
+                        resp.forEach(data => {
+                            const order_id = generateUniqueId({
+                                length: 8,
+                                useLetters: false
+                            })
+                            var temp = {
+                                client_id: data.id,
+                                order_id: enq_form.prop_id + order_id,
+                                holder_type: "joint",
+                                enq_form_id: enq_form.id || enq_resp.id,
+                                prop_id: enq_form.prop_id,
+                                paidStatus: enq_form.paidStatus,
+                                investing_amount: enq_form.investing_amount,
+                                paidStatus: enq_form.paidStatus
+                            }
+                            order_payload.push(temp)
+                        })
+                        const order_id = generateUniqueId({
+                            length: 8,
+                            useLetters: false
+                        })
+                        const main_holder = {
+                            client_id: enq_form.client_id,
+                            holder_type: "self",
+                            order_id: enq_form.prop_id + order_id,
+                            enq_form_id: enq_form.id || enq_resp.id,
+                            prop_id: enq_form.prop_id,
+                            paidStatus: enq_form.paidStatus,
+                            investing_amount: enq_form.investing_amount,
+                            paidStatus: enq_form.paidStatus
+                        }
+                        order_payload.push(main_holder)
+
+                        if (order_payload.length == 1) {
+
+                            var existing_email = []
+                            enq_form.clients.forEach((data) => {
+                                existing_email.push(data.client_email)
+                            })
+                            // if every client is existing
+                            const find_client = await Client.findAll({
+                                where: {
+                                    client_email: existing_email
+                                }
+                            })
+                            for await (let client of find_client) {
+                                // console.log(client.id)
+                                const joint_holder = {
+                                    client_id: client.id,
+                                    holder_type: "joint",
+                                    order_id: enq_form.prop_id + order_id,
+                                    enq_form_id: enq_form.id || enq_resp.id,
+                                    prop_id: enq_form.prop_id,
+                                    paidStatus: enq_form.paidStatus,
+                                    investing_amount: enq_form.investing_amount,
+                                    paidStatus: enq_form.paidStatus
+                                }
+                                order_payload.push(joint_holder)
+                            }
+                        }
+                        // order create
+                        await Order.bulkCreate(order_payload).then(async (resp) => {
+                            console.log("4")
+                            return res.status(200).json({
+                                message: "order place successfully",
+                                resp
+                            })
+                        }).catch((err) => {
+                            console.log("err2", err)
+                            return res.status(400).json({
+                                message: "failed to create order"
+                            })
+                        })
+                    })
+                }).catch((err) => {
+                    console.log(err)
+                    return res.status(400).json({
+                        message: "error",
+                        err
+                    })
+                })
+            } else {
+                const order_id = generateUniqueId({
+                    length: 8,
+                    useLetters: false
+                })
+                var temp = {
+                    client_id: enq_form.client_id,
+                    order_id: enq_form.prop_id + order_id,
+                    enq_form_id: enq_form.id || enq_resp.id,
+                    prop_id: enq_form.prop_id,
+                    paidStatus: enq_form.paidStatus,
+                    investing_amount: enq_form.investing_amount,
+                    paidStatus: enq_form.paidStatus
+                }
+                await Order.create(temp).then(async (resp) => {
+                    await getOrder(resp.id).then((result) => {
+                        console.log(result)
+                        return res.status(200).json({
+                            message: "order place successfully",
+                            resp,
+                            order: result
+                        })
+                    })
+                }).catch((err) => {
+                    console.log(err)
+                    return res.status(400).json({
+                        message: "failed to create order"
+                    })
+                })
             }
-            await Order.create(temp).then(() => {
-                return res.status(200).json({
-                    message: "order place successfully",
-                    update_form
-                })
-            }).catch((err) => {
-                console.log(err)
-                return res.status(400).json({
-                    message: "failed to create order"
-                })
-            })
         } else {
             return res.status(200).json({
                 message: "save draft",

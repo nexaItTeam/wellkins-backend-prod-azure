@@ -15,5 +15,5 @@ router.post('/document', imgUpload.upload.single('document'), EnqueryFormControl
 router.post('/change-status', verify.validateToken, EnqueryFormControler.updateOrderStatus)
 router.post('/invested-locations', verify.validateToken, EnqueryFormControler.investedLocations)
 router.post('/invoice-email', verify.validateToken, EnqueryFormControler.invoiceEmail)
-
+router.post('/create-certificate', verify.validateToken ,EnqueryFormControler.createunitcertificate)
 module.exports = router

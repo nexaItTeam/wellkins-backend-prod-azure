@@ -181,6 +181,7 @@ exports.addEnqForm = async (req, res) => {
                                         useLetters: false
                                     })
                                     var temp = {
+                                        investment_unit: enq_form.investment_unit,
                                         client_id: data.id,
                                         order_id: enq_form.prop_id + order_id,
                                         holder_type: "joint",
@@ -197,6 +198,7 @@ exports.addEnqForm = async (req, res) => {
                                     useLetters: false
                                 })
                                 const main_holder = {
+                                    investment_unit: enq_form.investment_unit,
                                     client_id: enq_form.client_id,
                                     holder_type: "self",
                                     order_id: enq_form.prop_id + order_id,
@@ -223,6 +225,7 @@ exports.addEnqForm = async (req, res) => {
                                     for await (let client of find_client) {
                                         // console.log(client.id)
                                         const joint_holder = {
+                                            investment_unit: enq_form.investment_unit,
                                             client_id: client.id,
                                             holder_type: "joint",
                                             order_id: enq_form.prop_id + order_id,
@@ -262,6 +265,7 @@ exports.addEnqForm = async (req, res) => {
                             useLetters: false
                         })
                         var temp = {
+                            investment_unit: enq_form.investment_unit,
                             client_id: enq_form.client_id,
                             order_id: enq_form.prop_id + order_id,
                             enq_form_id: enq_form.id || enq_resp.id,
@@ -463,6 +467,7 @@ exports.updateEnqForm = async (req, res) => {
                                 useLetters: false
                             })
                             var temp = {
+                                investment_unit: enq_form.investment_unit,
                                 client_id: data.id,
                                 order_id: enq_form.prop_id + order_id,
                                 holder_type: "joint",
@@ -479,6 +484,7 @@ exports.updateEnqForm = async (req, res) => {
                             useLetters: false
                         })
                         const main_holder = {
+                            investment_unit: enq_form.investment_unit,
                             client_id: enq_form.client_id,
                             holder_type: "self",
                             order_id: enq_form.prop_id + order_id,
@@ -505,6 +511,7 @@ exports.updateEnqForm = async (req, res) => {
                             for await (let client of find_client) {
                                 // console.log(client.id)
                                 const joint_holder = {
+                                    investment_unit: enq_form.investment_unit,
                                     client_id: client.id,
                                     holder_type: "joint",
                                     order_id: enq_form.prop_id + order_id,
@@ -544,6 +551,7 @@ exports.updateEnqForm = async (req, res) => {
                     useLetters: false
                 })
                 var temp = {
+                    investment_unit: enq_form.investment_unit,
                     client_id: enq_form.client_id,
                     order_id: enq_form.prop_id + order_id,
                     enq_form_id: enq_form.id || enq_resp.id,
@@ -738,4 +746,40 @@ exports.investedLocations = async (req, res) => {
             error
         })
     }
-} 
+
+}
+
+exports.createunitcertificate = async (req, res) => {
+    try {
+        var get_order = await Order.findAll({
+            where: {
+                prop_id: req.body.prop_id,
+                client_id: req.body.client_id
+            },
+            include: [
+                {
+                    model: model.Property,
+                    as: 'enq_prop_data'
+                },
+                {
+                    model: model.Client,
+                    as: 'enq_client_data'
+                },
+                {
+                    model: model.Enquiry_form,
+                    as: 'enq_form_data'
+                }
+            ]
+        })
+        return res.status(200).json({
+            message: "Success",
+            get_order
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            message: "Server Error",
+            error
+        })
+    }
+}

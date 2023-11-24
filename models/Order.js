@@ -52,7 +52,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             field: 'isEamil',
             defaultValue: false,
-        }
+        },
+        investment_unit: {
+            type: DataTypes.INTEGER,
+            field: 'investment_unit'
+        },
     }, {
         sequelize,
         tableName: 'order',

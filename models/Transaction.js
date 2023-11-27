@@ -2,9 +2,30 @@ const { Model } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
     class Transaction extends Model {
-        
+        static associate(models) {
+            // cleint
+            Transaction.belongsTo(models.Client, {
+                foreignKey: "client_id",
+                as: 'client_data'
+            })
+            // order
+            Transaction.belongsTo(models.Order, {
+                foreignKey: "order_id",
+                as: 'order_data'
+            })
+            // enquery form
+            Transaction.belongsTo(models.Enquiry_form, {
+                foreignKey: "enq_form_id",
+                as: 'enq_form_data'
+            })
+            // property
+            Transaction.belongsTo(models.Property, {
+                foreignKey: "prop_id",
+                as: 'prop_data'
+            })
+        }
     }
-    Transaction.init({   
+    Transaction.init({
         client_id: {
             type: DataTypes.INTEGER,
             field: 'client_id'
@@ -38,23 +59,23 @@ module.exports = (sequelize, DataTypes) => {
             field: 'transaction_type'
         },
         units_acquired: {
-            type:  DataTypes.INTEGER,
+            type: DataTypes.INTEGER,
             field: 'units_acquired'
         },
         units_transferred: {
-            type:  DataTypes.INTEGER,
+            type: DataTypes.INTEGER,
             field: 'units_transferred'
         },
         units_balance: {
-            type:  DataTypes.INTEGER,
+            type: DataTypes.INTEGER,
             field: 'units_balance'
         },
-        amount_paid: { 
-            type:  DataTypes.INTEGER,
+        amount_paid: {
+            type: DataTypes.INTEGER,
             field: 'amount_paid'
         },
         amount_unpaid: {
-            type:  DataTypes.INTEGER,
+            type: DataTypes.INTEGER,
             field: 'amount_unpaid'
         },
     }, {

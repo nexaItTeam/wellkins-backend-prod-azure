@@ -209,9 +209,7 @@ exports.addEnqForm = async (req, res) => {
                                     paidStatus: enq_form.paidStatus
                                 }
                                 order_payload.push(main_holder)
-
                                 if (order_payload.length == 1) {
-
                                     var existing_email = []
                                     enq_form.clients.forEach((data) => {
                                         existing_email.push(data.client_email)
@@ -240,20 +238,18 @@ exports.addEnqForm = async (req, res) => {
                                 }
                                 // order create
                                 await Order.bulkCreate(order_payload).then(async (resp) => {
-                                    console.log("4")
+                                    console.log(resp)
                                     return res.status(200).json({
                                         message: "order place successfully",
                                         resp
                                     })
                                 }).catch((err) => {
-                                    console.log("err2", err)
                                     return res.status(400).json({
                                         message: "failed to create order"
                                     })
                                 })
                             })
                         }).catch((err) => {
-                            console.log(err)
                             return res.status(400).json({
                                 message: "error",
                                 err

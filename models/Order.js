@@ -3,6 +3,10 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     class Order extends Model {
         static associate(models) {
+            Order.hasOne(models.Transaction, {
+                foreignKey: "order_id",
+            })
+            
             Order.belongsTo(models.Enquiry_form, {
                 foreignKey: "enq_form_id",
                 as: 'enq_form_data'

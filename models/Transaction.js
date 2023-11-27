@@ -56,7 +56,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         transaction_type: {
             type: DataTypes.STRING,
-            field: 'transaction_type'
+            field: 'transaction_type',
+            defaultValue: "Allotment",
         },
         units_acquired: {
             type: DataTypes.INTEGER,

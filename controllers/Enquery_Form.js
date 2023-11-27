@@ -661,11 +661,10 @@ exports.uploadeDocument = async (req, res) => {
 
     }
 }
-
 // update order status
 exports.orderStatus = async (req, res) => {
     try {
-        const { order } = req.body
+        const { order, transaction } = req.body
         var update_order = await Order.update(
             order,
             {
@@ -673,9 +672,10 @@ exports.orderStatus = async (req, res) => {
                     id: order.id
                 }
             })
+        var traansaction = await Transaction.create(transaction)
         return res.status(200).json({
             message: "order update successfully",
-            update_order
+            update_order, traansaction
         })
     } catch (error) {
         return res.status(500).json({
@@ -823,7 +823,7 @@ exports.getTransaction = async (req, res) => {
     } catch (error) {
         return res.status(500).json({
             message: "Server Error",
-           
+
         })
     }
 }

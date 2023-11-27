@@ -46,9 +46,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'investment_unit'
         },
-        investment_amount: {
+        investing_amount: {
             type: DataTypes.INTEGER,
-            field: 'investment_amount'
+            field: 'investing_amount'
         },
         transaction_date: {
             type: DataTypes.DATE,

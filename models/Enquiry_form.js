@@ -6,6 +6,10 @@ module.exports = (sequelize, DataTypes) => {
             Enquiry_form.hasOne(models.Order, {
                 foreignKey: "enq_form_id",
             })
+
+            Enquiry_form.hasOne(models.Transaction, {
+                foreignKey: "enq_form_id",
+            })
         }
     }
     Enquiry_form.init({

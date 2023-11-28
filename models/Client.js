@@ -9,6 +9,9 @@ module.exports = (sequelize, DataTypes) => {
             Client.hasOne(models.Favourite, {
                 foreignKey: "user_id",
             })
+            Client.hasOne(models.Transaction, {
+                foreignKey: "client_id",
+            })
         }
     }
     Client.init({

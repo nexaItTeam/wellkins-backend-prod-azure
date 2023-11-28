@@ -1,4 +1,4 @@
-const { Enquiry_form, Client, Document, Order } = require('../models')
+const { Enquiry_form, Client, Document, Order, Transaction } = require('../models')
 const model = require('../models')
 const { documents } = require('../middleware/Document')
 const imgUpload = require('../middleware/ImmgUpload')
@@ -8,7 +8,6 @@ const db = require('../models');
 const { invoice_Mail } = require('../service/azureEmail')
 const bcrypt = require("bcrypt")
 const { multipleAccount } = require('../service/azureEmail')
-
 
 // get all form
 exports.getAllOrder = async (req, res) => {
@@ -146,7 +145,6 @@ exports.addEnqForm = async (req, res) => {
                         await enq_form.clients.forEach(data => {
                             emails.push(data)
                         });
-
                         const find_client = await Client.findAll()
                         for (let i = 0; i < find_client.length; i++) {
                             var index = emails.findIndex(x => x.client_email == find_client[i].client_email)
@@ -209,9 +207,7 @@ exports.addEnqForm = async (req, res) => {
                                     paidStatus: enq_form.paidStatus
                                 }
                                 order_payload.push(main_holder)
-
                                 if (order_payload.length == 1) {
-
                                     var existing_email = []
                                     enq_form.clients.forEach((data) => {
                                         existing_email.push(data.client_email)
@@ -240,26 +236,44 @@ exports.addEnqForm = async (req, res) => {
                                 }
                                 // order create
                                 await Order.bulkCreate(order_payload).then(async (resp) => {
-                                    console.log("4")
-                                    return res.status(200).json({
-                                        message: "order place successfully",
-                                        resp
+                                    console.log(resp)
+                                    // create transaction
+                                    var transaction = []
+                                    resp.forEach((data) => {
+                                        var temp = {
+                                            "client_id": data.client_id,
+                                            "order_id": data.id,
+                                            "enq_form_id": data.enq_form_id,
+                                            "prop_id": data.prop_id,
+                                            "investing_amount": data.investing_amount,
+                                            "investment_unit": data.investment_unit,
+                                            "units_acquired": data.investment_unit,
+                                            "units_transferred": 0,
+                                            "units_balance": data.investment_unit
+                                        }
+                                        transaction.push(temp)
+                                    })
+                                    console.log(transaction)
+                                    await Transaction.bulkCreate(temp).then(() => {
+                                        return res.status(200).json({
+                                            message: "order place successfully",
+                                            resp
+                                        })
                                     })
                                 }).catch((err) => {
-                                    console.log("err2", err)
                                     return res.status(400).json({
                                         message: "failed to create order"
                                     })
                                 })
                             })
                         }).catch((err) => {
-                            console.log(err)
                             return res.status(400).json({
                                 message: "error",
                                 err
                             })
                         })
                     } else {
+                        // already client exist
                         const order_id = generateUniqueId({
                             length: 8,
                             useLetters: false
@@ -275,12 +289,21 @@ exports.addEnqForm = async (req, res) => {
                             paidStatus: enq_form.paidStatus
                         }
                         await Order.create(temp).then(async (resp) => {
-                            await getOrder(resp.id).then((result) => {
-                                console.log(result)
+                            var temp = {
+                                "client_id": resp.client_id,
+                                "order_id": resp.id,
+                                "enq_form_id": resp.enq_form_id,
+                                "prop_id": resp.prop_id,
+                                "investing_amount": resp.investing_amount,
+                                "investment_unit": resp.investment_unit,
+                                "units_acquired": resp.investment_unit,
+                                "units_transferred": 0,
+                                "units_balance": resp.investment_unit
+                            }
+                            await Transaction.create(temp).then(() => {
                                 return res.status(200).json({
                                     message: "order place successfully",
-                                    resp,
-                                    order: result
+                                    resp
                                 })
                             })
                         }).catch((err) => {
@@ -310,8 +333,6 @@ exports.addEnqForm = async (req, res) => {
         })
     }
 }
-
-
 
 exports.invoiceEmail = async (req, res) => {
     try {
@@ -348,7 +369,6 @@ exports.invoiceEmail = async (req, res) => {
 // get order
 const getOrder = async (id) => {
     try {
-
         var get_order = await Order.findOne({
             where: {
                 id: id
@@ -368,20 +388,6 @@ const getOrder = async (id) => {
                 }
             ]
         })
-
-        var mail_temp = {
-            Date: new Date(),
-            contactno: contact_no,
-            email: client_email,
-            Address: ""
-        }
-        var mail_temp = {
-            referenceNO: 77777,
-            classUnit: 2,
-            email: client_email,
-            Address: ""
-        }
-
         return get_order
     } catch (error) {
         return error
@@ -402,30 +408,6 @@ exports.updateEnqForm = async (req, res) => {
             }
         )
         if (enq_form.isDraft != true) {
-            // const order_id = generateUniqueId({
-            //     length: 8,
-            //     useLetters: false
-            // })
-            // var temp = {
-            //     order_id: enq_form.prop_id + order_id,
-            //     enq_form_id: enq_form.id,
-            //     client_id: enq_form.client_id,
-            //     prop_id: enq_form.prop_id,
-            //     paidStatus: enq_form.paidStatus,
-            //     investing_amount: enq_form.investing_amount,
-            //     paidStatus: enq_form.paidStatus
-            // }
-            // await Order.create(temp).then(() => {
-            //     return res.status(200).json({
-            //         message: "order place successfully",
-            //         update_form
-            //     })
-            // }).catch((err) => {
-            //     console.log(err)
-            //     return res.status(400).json({
-            //         message: "failed to create order"
-            //     })
-            // })
             if (enq_form.investor_form_type === "Individual") {
                 console.log("2")
                 const emails = []
@@ -526,13 +508,32 @@ exports.updateEnqForm = async (req, res) => {
                         }
                         // order create
                         await Order.bulkCreate(order_payload).then(async (resp) => {
-                            console.log("4")
-                            return res.status(200).json({
-                                message: "order place successfully",
-                                resp
+                            console.log("4", resp)
+                            // create transaction
+                            var transaction = []
+                            resp.forEach((data) => {
+                                var temp = {
+                                    "client_id": data.client_id,
+                                    "order_id": data.id,
+                                    "enq_form_id": data.enq_form_id,
+                                    "prop_id": data.prop_id,
+                                    "investing_amount": data.investing_amount,
+                                    "investment_unit": data.investment_unit,
+                                    "units_acquired": data.investment_unit,
+                                    "units_transferred": 0,
+                                    "units_balance": data.investment_unit
+                                }
+                                transaction.push(temp)
+                            })
+                            console.log(transaction)
+                            await Transaction.bulkCreate(transaction).then(() => {
+                                return res.status(200).json({
+                                    message: "order place successfully",
+                                    resp
+                                })
                             })
                         }).catch((err) => {
-                            console.log("err2", err)
+                            console.log("===", err)
                             return res.status(400).json({
                                 message: "failed to create order"
                             })
@@ -561,12 +562,21 @@ exports.updateEnqForm = async (req, res) => {
                     paidStatus: enq_form.paidStatus
                 }
                 await Order.create(temp).then(async (resp) => {
-                    await getOrder(resp.id).then((result) => {
-                        console.log(result)
+                    var temp = {
+                        "client_id": resp.client_id,
+                        "order_id": resp.id,
+                        "enq_form_id": resp.enq_form_id,
+                        "prop_id": resp.prop_id,
+                        "investing_amount": resp.investing_amount,
+                        "investment_unit": resp.investment_unit,
+                        "units_acquired": resp.investment_unit,
+                        "units_transferred": 0,
+                        "units_balance": resp.investment_unit
+                    }
+                    await Transaction.create(temp).then(() => {
                         return res.status(200).json({
                             message: "order place successfully",
-                            resp,
-                            order: result
+                            resp
                         })
                     })
                 }).catch((err) => {
@@ -582,12 +592,7 @@ exports.updateEnqForm = async (req, res) => {
                 update_form
             })
         }
-        // return res.status(200).send({
-        //     message: "update post",
-        //     update_form
-        // })
     } catch (error) {
-        console.log(error)
         res.status(500).json({
             message: "Server Error",
             error
@@ -656,11 +661,10 @@ exports.uploadeDocument = async (req, res) => {
 
     }
 }
-
 // update order status
 exports.orderStatus = async (req, res) => {
     try {
-        const { order } = req.body
+        const { order, transaction } = req.body
         var update_order = await Order.update(
             order,
             {
@@ -668,9 +672,10 @@ exports.orderStatus = async (req, res) => {
                     id: order.id
                 }
             })
+        var traansaction = await Transaction.create(transaction)
         return res.status(200).json({
             message: "order update successfully",
-            update_order
+            update_order, traansaction
         })
     } catch (error) {
         return res.status(500).json({
@@ -682,15 +687,24 @@ exports.orderStatus = async (req, res) => {
 
 exports.updateOrderStatus = async (req, res) => {
     try {
-        const { order } = req.body
-        var updateStatus = await Order.update(order, {
-            where: {
-                id: order.id
-            }
-        })
-        return res.status(200).send({
-            message: "update User",
-            updateStatus
+        const { order, transaction } = req.body
+        if (order) {
+            console.log("order")
+            var updateStatus = await Order.update(order, {
+                where: {
+                    id: order.id
+                }
+            })
+        }
+
+        if (transaction) {
+            console.log("transaction")
+            var traansaction = await Transaction.create(transaction)
+        }
+
+        return res.status(200).json({
+            message: "order update successfully",
+            updateStatus, traansaction
         })
     } catch (error) {
         res.status(500).json({
@@ -780,6 +794,98 @@ exports.createunitcertificate = async (req, res) => {
         res.status(500).json({
             message: "Server Error",
             error
+        })
+    }
+}
+
+exports.getTransaction = async (req, res) => {
+    try {
+        console.log("req.body.client_id", req.body.client_id)
+        var get_transaction
+        if (req.body.client_id != null && req.body.client_id === null) {
+            console.log('1')
+            get_transaction = await Transaction.findAll({
+                where: {
+                    client_id: req.body.client_id
+                },
+                include: [
+                    {
+                        model: model.Client,
+                        as: 'client_data'
+                    },
+                    {
+                        model: model.Order,
+                        as: 'order_data'
+                    },
+                    {
+                        model: model.Enquiry_form,
+                        as: 'enq_form_data'
+                    },
+                    {
+                        model: model.Property,
+                        as: 'prop_data'
+                    }
+                ]
+            })
+        } else if (req.body.order_id != null) {
+            console.log('2')
+            get_transaction = await Transaction.findAll({
+                where: {
+                    order_id: req.body.order_id,
+                    client_id: req.body.client_id
+                },
+                include: [
+                    {
+                        model: model.Client,
+                        as: 'client_data'
+                    },
+                    {
+                        model: model.Order,
+                        as: 'order_data'
+                    },
+                    {
+                        model: model.Enquiry_form,
+                        as: 'enq_form_data'
+                    },
+                    {
+                        model: model.Property,
+                        as: 'prop_data'
+                    }
+                ]
+            })
+        } else {
+            console.log('3')
+            get_transaction = await Transaction.findAll({
+                include: [
+                    {
+                        model: model.Client,
+                        as: 'client_data'
+                    },
+                    {
+                        model: model.Order,
+                        as: 'order_data'
+                    },
+                    {
+                        model: model.Enquiry_form,
+                        as: 'enq_form_data'
+                    },
+                    {
+                        model: model.Property,
+                        as: 'prop_data'
+                    }
+                ]
+            })
+        }
+
+        return res.status(200).json({
+            message: "Success",
+            get_transaction
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Server Error",
+
         })
     }
 }

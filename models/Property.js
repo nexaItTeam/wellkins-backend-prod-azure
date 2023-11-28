@@ -3,6 +3,10 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     class Property extends Model {
         static associate(models) {
+            Property.hasOne(models.Transaction, {
+                foreignKey: "prop_id",
+            })
+
             Property.hasOne(models.Enquery, {
                 foreignKey: "property_id",
             })

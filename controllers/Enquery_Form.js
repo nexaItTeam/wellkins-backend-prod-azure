@@ -687,15 +687,24 @@ exports.orderStatus = async (req, res) => {
 
 exports.updateOrderStatus = async (req, res) => {
     try {
-        const { order } = req.body
-        var updateStatus = await Order.update(order, {
-            where: {
-                id: order.id
-            }
-        })
-        return res.status(200).send({
-            message: "update User",
-            updateStatus
+        const { order, transaction } = req.body
+        if (order) {
+            console.log("order")
+            var updateStatus = await Order.update(order, {
+                where: {
+                    id: order.id
+                }
+            })
+        }
+
+        if (transaction) {
+            console.log("transaction")
+            var traansaction = await Transaction.create(transaction)
+        }
+
+        return res.status(200).json({
+            message: "order update successfully",
+            updateStatus, traansaction
         })
     } catch (error) {
         res.status(500).json({
@@ -793,7 +802,8 @@ exports.getTransaction = async (req, res) => {
     try {
         console.log("req.body.client_id", req.body.client_id)
         var get_transaction
-        if (req.body.client_id != null) {
+        if (req.body.client_id != null && req.body.client_id === null) {
+            console.log('1')
             get_transaction = await Transaction.findAll({
                 where: {
                     client_id: req.body.client_id
@@ -818,6 +828,7 @@ exports.getTransaction = async (req, res) => {
                 ]
             })
         } else if (req.body.order_id != null) {
+            console.log('2')
             get_transaction = await Transaction.findAll({
                 where: {
                     order_id: req.body.order_id,
@@ -843,6 +854,7 @@ exports.getTransaction = async (req, res) => {
                 ]
             })
         } else {
+            console.log('3')
             get_transaction = await Transaction.findAll({
                 include: [
                     {

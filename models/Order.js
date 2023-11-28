@@ -61,6 +61,14 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'investment_unit'
         },
+        amount_paid: {
+            type: DataTypes.INTEGER,
+            field: 'amount_paid'
+        },
+        amount_unpaid: {
+            type: DataTypes.INTEGER,
+            field: 'amount_unpaid'
+        },
     }, {
         sequelize,
         tableName: 'order',

@@ -792,29 +792,79 @@ exports.createunitcertificate = async (req, res) => {
 exports.getTransaction = async (req, res) => {
     try {
         console.log("req.body.client_id", req.body.client_id)
-        var get_transaction = await Transaction.findAll({
-            where: {
-                client_id: req.body.client_id
-            },
-            include: [
-                {
-                    model: model.Client,
-                    as: 'client_data'
+        var get_transaction
+        if (req.body.client_id != null) {
+            get_transaction = await Transaction.findAll({
+                where: {
+                    client_id: req.body.client_id
                 },
-                {
-                    model: model.Order,
-                    as: 'order_data'
+                include: [
+                    {
+                        model: model.Client,
+                        as: 'client_data'
+                    },
+                    {
+                        model: model.Order,
+                        as: 'order_data'
+                    },
+                    {
+                        model: model.Enquiry_form,
+                        as: 'enq_form_data'
+                    },
+                    {
+                        model: model.Property,
+                        as: 'prop_data'
+                    }
+                ]
+            })
+        } else if (req.body.order_id != null) {
+            get_transaction = await Transaction.findAll({
+                where: {
+                    order_id: req.body.order_id,
+                    client_id: req.body.client_id
                 },
-                {
-                    model: model.Enquiry_form,
-                    as: 'enq_form_data'
-                },
-                {
-                    model: model.Property,
-                    as: 'prop_data'
-                }
-            ]
-        })
+                include: [
+                    {
+                        model: model.Client,
+                        as: 'client_data'
+                    },
+                    {
+                        model: model.Order,
+                        as: 'order_data'
+                    },
+                    {
+                        model: model.Enquiry_form,
+                        as: 'enq_form_data'
+                    },
+                    {
+                        model: model.Property,
+                        as: 'prop_data'
+                    }
+                ]
+            })
+        } else {
+            get_transaction = await Transaction.findAll({
+                include: [
+                    {
+                        model: model.Client,
+                        as: 'client_data'
+                    },
+                    {
+                        model: model.Order,
+                        as: 'order_data'
+                    },
+                    {
+                        model: model.Enquiry_form,
+                        as: 'enq_form_data'
+                    },
+                    {
+                        model: model.Property,
+                        as: 'prop_data'
+                    }
+                ]
+            })
+        }
+
         return res.status(200).json({
             message: "Success",
             get_transaction

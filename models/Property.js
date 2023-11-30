@@ -102,6 +102,10 @@ module.exports = (sequelize, DataTypes) => {
         prop_vote_count: {
             type: DataTypes.INTEGER,
             field: 'prop_vote_count'
+        },
+        base_price: {
+            type: DataTypes.INTEGER,
+            field: 'base_price'
         }
     }, {
         sequelize,

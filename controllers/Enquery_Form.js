@@ -13,10 +13,32 @@ const { multipleAccount } = require('../service/azureEmail')
 exports.getAllOrder = async (req, res) => {
     try {
         var getOrder
-        if (req.body.client_id != null) {
+        if (req.body.client_id != null && req.body.prop_id ==null) {
             getOrder = await Order.findAndCountAll({
                 where: {
                     client_id: req.body.client_id
+                },
+                order: [['createdAt', 'DESC']],
+                include: [
+                    {
+                        model: model.Property,
+                        as: 'enq_prop_data'
+                    },
+                    {
+                        model: model.Client,
+                        as: 'enq_client_data'
+                    },
+                    {
+                        model: model.Enquiry_form,
+                        as: 'enq_form_data'
+                    }
+                ]
+            })
+        } else if (req.body.client_id != null && req.body.prop_id !=null ) {
+            getOrder = await Order.findAndCountAll({
+                where: {
+                    client_id: req.body.client_id,
+                    prop_id: req.body.prop_id,
                 },
                 order: [['createdAt', 'DESC']],
                 include: [

@@ -363,7 +363,7 @@ exports.invoiceEmail = async (req, res) => {
         await invoice_Mail(email).then(async () => {
             const updat_order = await Order.update(
                 {
-                    isEamil: false
+                    isEamil: true
                 },
                 {
                     where: {
@@ -371,13 +371,14 @@ exports.invoiceEmail = async (req, res) => {
                     }
                 }
             )
-            if (updat_order) {
+            if (true) {
                 return res.status(200).json({
                     message: "email send successfully",
-                    updat_order
+                   // updat_order
                 })
             }
         }).catch((e) => {
+            console.log(e)
             return res.status(400).json({
                 message: e
             })

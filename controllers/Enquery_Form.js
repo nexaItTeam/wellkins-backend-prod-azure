@@ -371,10 +371,10 @@ exports.invoiceEmail = async (req, res) => {
                     }
                 }
             )
-            if (true) {
+            if (updat_order) {
                 return res.status(200).json({
                     message: "email send successfully",
-                   // updat_order
+                    updat_order
                 })
             }
         }).catch((e) => {

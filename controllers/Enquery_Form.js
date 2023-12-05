@@ -149,6 +149,7 @@ exports.find_client = async (req, res) => {
 exports.addEnqForm = async (req, res) => {
     try {
         const { enq_form } = req.body
+        
         // find user in client table
         const find_user = await Client.findOne({
             where: {
@@ -161,8 +162,8 @@ exports.addEnqForm = async (req, res) => {
             await Enquiry_form.create(enq_form).then(async (enq_resp) => {
                 if (enq_form.isDraft != true) {
                     // create clients
-                    if (enq_form.investor_form_type === "Individual") {
-                        console.log("2")
+                    if (enq_form.investor_form_type === "Individual"  && req.body.enq_form.clients.length != 0) {
+                      
                         const emails = []
                         await enq_form.clients.forEach(data => {
                             emails.push(data)
@@ -283,6 +284,7 @@ exports.addEnqForm = async (req, res) => {
                                         })
                                     })
                                 }).catch((err) => {
+                                    console.log(err)
                                     return res.status(400).json({
                                         message: "failed to create order"
                                     })

@@ -853,7 +853,7 @@ exports.getTransaction = async (req, res) => {
                 ],
                 order: [['createdAt', 'DESC']],
             })
-        } else if (req.body.order_id != null && req.body.holder_type === "self") {
+        } else if (req.body.order_id != null ) {
             console.log('2')
             get_transaction = await db.sequelize.query(`SELECT nexa_capital.transaction.*, nexa_capital.client.full_name, nexa_capital.order.order_id, 
                                                                 nexa_capital.property.property_name

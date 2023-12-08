@@ -13,7 +13,7 @@ const { multipleAccount } = require('../service/azureEmail')
 exports.getAllOrder = async (req, res) => {
     try {
         var getOrder
-        if (req.body.client_id != null && req.body.prop_id ==null) {
+        if (req.body.client_id != null && req.body.prop_id == null) {
             getOrder = await Order.findAndCountAll({
                 where: {
                     client_id: req.body.client_id
@@ -34,7 +34,7 @@ exports.getAllOrder = async (req, res) => {
                     }
                 ]
             })
-        } else if (req.body.client_id != null && req.body.prop_id !=null ) {
+        } else if (req.body.client_id != null && req.body.prop_id != null) {
             getOrder = await Order.findAndCountAll({
                 where: {
                     client_id: req.body.client_id,
@@ -149,7 +149,7 @@ exports.find_client = async (req, res) => {
 exports.addEnqForm = async (req, res) => {
     try {
         const { enq_form } = req.body
-        
+
         // find user in client table
         const find_user = await Client.findOne({
             where: {
@@ -162,8 +162,8 @@ exports.addEnqForm = async (req, res) => {
             await Enquiry_form.create(enq_form).then(async (enq_resp) => {
                 if (enq_form.isDraft != true) {
                     // create clients
-                    if (enq_form.investor_form_type === "Individual"  && req.body.enq_form.clients.length != 0) {
-                      
+                    if (enq_form.investor_form_type === "Individual" && req.body.enq_form.clients.length != 0) {
+
                         const emails = []
                         await enq_form.clients.forEach(data => {
                             emails.push(data)
@@ -717,7 +717,7 @@ exports.updateOrderStatus = async (req, res) => {
             console.log("order")
             var updateStatus = await Order.update(order, {
                 where: {
-                    id: order.id
+                    order_id: order.order_id
                 }
             })
         }

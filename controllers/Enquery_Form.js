@@ -850,7 +850,8 @@ exports.getTransaction = async (req, res) => {
                         model: model.Property,
                         as: 'prop_data'
                     }
-                ]
+                ],
+                order: [['createdAt', 'DESC']],
             })
         } else if (req.body.order_id != null) {
             console.log('2')
@@ -876,7 +877,8 @@ exports.getTransaction = async (req, res) => {
                         model: model.Property,
                         as: 'prop_data'
                     }
-                ]
+                ],
+                order: [['createdAt', 'DESC']],
             })
         } else {
             console.log('3')
@@ -898,7 +900,8 @@ exports.getTransaction = async (req, res) => {
                         model: model.Property,
                         as: 'prop_data'
                     }
-                ]
+                ],
+                order: [['createdAt', 'DESC']],
             })
         }
 

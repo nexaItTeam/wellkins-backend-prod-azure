@@ -853,7 +853,7 @@ exports.getTransaction = async (req, res) => {
                 ],
                 order: [['createdAt', 'DESC']],
             })
-        } else if (req.body.order_id != null ) {
+        } else if (req.body.order_id != null && req.body.form_type != "Individual") {
             console.log('2')
             get_transaction = await db.sequelize.query(`SELECT nexa_capital.transaction.*, nexa_capital.client.full_name, nexa_capital.order.order_id, 
                                                                 nexa_capital.property.property_name
@@ -863,6 +863,15 @@ exports.getTransaction = async (req, res) => {
                                                                 JOIN nexa_capital.property ON transaction.prop_id = nexa_capital.property.id
                                                                 WHERE nexa_capital.order.order_id =${req.body.order_id} and 
                                                                 nexa_capital.order.holder_type="self" ORDER BY nexa_capital.transaction.createdAt DESC;`)
+        } else if (req.body.form_type === "Individual") {
+            get_transaction = await db.sequelize.query(`SELECT nexa_capital.transaction.*, nexa_capital.client.full_name, nexa_capital.order.order_id, 
+                                                                nexa_capital.property.property_name
+                                                                FROM nexa_capital.transaction
+                                                                JOIN nexa_capital.client ON transaction.client_id = nexa_capital.client.id
+                                                                JOIN nexa_capital.order ON transaction.order_id = nexa_capital.order.id
+                                                                JOIN nexa_capital.property ON transaction.prop_id = nexa_capital.property.id
+                                                                WHERE nexa_capital.order.order_id =${req.body.order_id} and 
+                                                                ORDER BY nexa_capital.transaction.createdAt DESC;`)
         } else {
             console.log('3')
             get_transaction = await Transaction.findAll({

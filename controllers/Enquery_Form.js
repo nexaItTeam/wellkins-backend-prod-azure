@@ -861,7 +861,8 @@ exports.getTransaction = async (req, res) => {
                                                                 JOIN nexa_capital.client ON transaction.client_id = nexa_capital.client.id
                                                                 JOIN nexa_capital.order ON transaction.order_id = nexa_capital.order.id
                                                                 JOIN nexa_capital.property ON transaction.prop_id = nexa_capital.property.id
-                                                                WHERE nexa_capital.order.order_id =${req.body.order_id} and nexa_capital.order.holder_type="self";`)
+                                                                WHERE nexa_capital.order.order_id =${req.body.order_id} and 
+                                                                nexa_capital.order.holder_type="self" ORDER BY nexa_capital.transaction.createdAt DESC;`)
         } else {
             console.log('3')
             get_transaction = await Transaction.findAll({

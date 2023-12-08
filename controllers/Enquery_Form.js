@@ -855,31 +855,13 @@ exports.getTransaction = async (req, res) => {
             })
         } else if (req.body.order_id != null) {
             console.log('2')
-            get_transaction = await Transaction.findAll({
-                where: {
-                    order_id: req.body.order_id,
-                    client_id: req.body.client_id
-                },
-                include: [
-                    {
-                        model: model.Client,
-                        as: 'client_data'
-                    },
-                    {
-                        model: model.Order,
-                        as: 'order_data'
-                    },
-                    {
-                        model: model.Enquiry_form,
-                        as: 'enq_form_data'
-                    },
-                    {
-                        model: model.Property,
-                        as: 'prop_data'
-                    }
-                ],
-                order: [['createdAt', 'DESC']],
-            })
+            get_transaction = await db.sequelize.query(`SELECT nexa_capital.transaction.*, nexa_capital.client.full_name, nexa_capital.order.order_id, 
+                                                                nexa_capital.property.property_name
+                                                                FROM nexa_capital.transaction
+                                                                JOIN nexa_capital.client ON transaction.client_id = nexa_capital.client.id
+                                                                JOIN nexa_capital.order ON transaction.order_id = nexa_capital.order.id
+                                                                JOIN nexa_capital.property ON transaction.prop_id = nexa_capital.property.id
+                                                                WHERE nexa_capital.order.order_id =${req.body.order_id} ;`)
         } else {
             console.log('3')
             get_transaction = await Transaction.findAll({

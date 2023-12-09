@@ -59,6 +59,11 @@ module.exports = (sequelize, DataTypes) => {
         fund_type: {
             type: DataTypes.STRING,
             field: 'fund_type'
+        },
+        isActiveEnq: {
+            type: DataTypes.STRING,
+            field: 'isActiveEnq',
+            defaultValue: false
         }
     }, {
         sequelize,

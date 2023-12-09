@@ -61,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
             field: 'fund_type'
         },
         isActiveEnq: {
-            type: DataTypes.STRING,
+            type: DataTypes.BOOLEAN,
             field: 'isActiveEnq',
             defaultValue: false
         }

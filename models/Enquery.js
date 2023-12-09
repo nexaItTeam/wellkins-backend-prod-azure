@@ -57,8 +57,13 @@ module.exports = (sequelize, DataTypes) => {
             field: 'assignTo'
         },
         fund_type: {
-            type: DataTypes.STRING,
+            type: DataTypes.STRING, 
             field: 'fund_type'
+        },
+        isActiveEnq: {
+            type: DataTypes.BOOLEAN,
+            field: 'isActiveEnq',
+            defaultValue: false
         }
     }, {
         sequelize,

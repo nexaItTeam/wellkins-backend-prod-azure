@@ -13,7 +13,7 @@ const { multipleAccount } = require('../service/azureEmail')
 exports.getAllOrder = async (req, res) => {
     try {
         var getOrder
-        if (req.body.client_id != null && req.body.prop_id ==null) {
+        if (req.body.client_id != null && req.body.prop_id == null) {
             getOrder = await Order.findAndCountAll({
                 where: {
                     client_id: req.body.client_id
@@ -34,7 +34,7 @@ exports.getAllOrder = async (req, res) => {
                     }
                 ]
             })
-        } else if (req.body.client_id != null && req.body.prop_id !=null ) {
+        } else if (req.body.client_id != null && req.body.prop_id != null) {
             getOrder = await Order.findAndCountAll({
                 where: {
                     client_id: req.body.client_id,
@@ -149,7 +149,7 @@ exports.find_client = async (req, res) => {
 exports.addEnqForm = async (req, res) => {
     try {
         const { enq_form } = req.body
-        
+
         // find user in client table
         const find_user = await Client.findOne({
             where: {
@@ -162,8 +162,8 @@ exports.addEnqForm = async (req, res) => {
             await Enquiry_form.create(enq_form).then(async (enq_resp) => {
                 if (enq_form.isDraft != true) {
                     // create clients
-                    if (enq_form.investor_form_type === "Individual"  && req.body.enq_form.clients.length != 0) {
-                      
+                    if (enq_form.investor_form_type === "Individual" && req.body.enq_form.clients.length != 0) {
+
                         const emails = []
                         await enq_form.clients.forEach(data => {
                             emails.push(data)
@@ -717,7 +717,7 @@ exports.updateOrderStatus = async (req, res) => {
             console.log("order")
             var updateStatus = await Order.update(order, {
                 where: {
-                    id: order.id
+                    order_id: order.order_id
                 }
             })
         }
@@ -853,33 +853,25 @@ exports.getTransaction = async (req, res) => {
                 ],
                 order: [['createdAt', 'DESC']],
             })
-        } else if (req.body.order_id != null) {
+        } else if (req.body.order_id != null && req.body.form_type != "Individual") {
             console.log('2')
-            get_transaction = await Transaction.findAll({
-                where: {
-                    order_id: req.body.order_id,
-                    client_id: req.body.client_id
-                },
-                include: [
-                    {
-                        model: model.Client,
-                        as: 'client_data'
-                    },
-                    {
-                        model: model.Order,
-                        as: 'order_data'
-                    },
-                    {
-                        model: model.Enquiry_form,
-                        as: 'enq_form_data'
-                    },
-                    {
-                        model: model.Property,
-                        as: 'prop_data'
-                    }
-                ],
-                order: [['createdAt', 'DESC']],
-            })
+            get_transaction = await db.sequelize.query(`SELECT nexa_capital.transaction.*, nexa_capital.client.full_name, nexa_capital.order.order_id, 
+                                                                nexa_capital.property.property_name
+                                                                FROM nexa_capital.transaction
+                                                                JOIN nexa_capital.client ON transaction.client_id = nexa_capital.client.id
+                                                                JOIN nexa_capital.order ON transaction.order_id = nexa_capital.order.id
+                                                                JOIN nexa_capital.property ON transaction.prop_id = nexa_capital.property.id
+                                                                WHERE nexa_capital.order.order_id =${req.body.order_id} and 
+                                                                nexa_capital.order.holder_type="self" ORDER BY nexa_capital.transaction.createdAt DESC;`)
+        } else if (req.body.form_type === "Individual") {
+            get_transaction = await db.sequelize.query(`SELECT nexa_capital.transaction.*, nexa_capital.client.full_name, nexa_capital.order.order_id, 
+                                                                nexa_capital.property.property_name
+                                                                FROM nexa_capital.transaction
+                                                                JOIN nexa_capital.client ON transaction.client_id = nexa_capital.client.id
+                                                                JOIN nexa_capital.order ON transaction.order_id = nexa_capital.order.id
+                                                                JOIN nexa_capital.property ON transaction.prop_id = nexa_capital.property.id
+                                                                WHERE nexa_capital.order.order_id =${req.body.order_id} and 
+                                                                ORDER BY nexa_capital.transaction.createdAt DESC;`)
         } else {
             console.log('3')
             get_transaction = await Transaction.findAll({

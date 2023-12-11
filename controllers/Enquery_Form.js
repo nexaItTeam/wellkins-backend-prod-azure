@@ -14,11 +14,11 @@ exports.getAllOrder = async (req, res) => {
     try {
         var getOrder
         if (req.body.client_id != null && req.body.prop_id == null) {
-            getOrder = await Order.findAndCountAll({
+            getOrder = await Order.findAll({
                 where: {
                     client_id: req.body.client_id
                 },
-                order: [['createdAt', 'DESC']],
+
                 include: [
                     {
                         model: model.Property,
@@ -32,15 +32,15 @@ exports.getAllOrder = async (req, res) => {
                         model: model.Enquiry_form,
                         as: 'enq_form_data'
                     }
-                ]
+                ],
+                order: [['createdAt', 'DESC']],
             })
         } else if (req.body.client_id != null && req.body.prop_id != null) {
-            getOrder = await Order.findAndCountAll({
+            getOrder = await Order.findAll({
                 where: {
                     client_id: req.body.client_id,
                     prop_id: req.body.prop_id,
                 },
-                order: [['createdAt', 'DESC']],
                 include: [
                     {
                         model: model.Property,
@@ -54,11 +54,11 @@ exports.getAllOrder = async (req, res) => {
                         model: model.Enquiry_form,
                         as: 'enq_form_data'
                     }
-                ]
+                ],
+                order: [['createdAt', 'DESC']],
             })
         } else {
-            getOrder = await Order.findAndCountAll({
-                order: [['createdAt', 'DESC']],
+            getOrder = await Order.findAll({
                 include: [
                     {
                         model: model.Property,
@@ -72,7 +72,8 @@ exports.getAllOrder = async (req, res) => {
                         model: model.Enquiry_form,
                         as: 'enq_form_data'
                     }
-                ]
+                ],
+                order: [['createdAt', 'DESC']],
             })
         }
         if (!getOrder) {

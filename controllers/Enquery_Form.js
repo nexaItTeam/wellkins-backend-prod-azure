@@ -272,12 +272,13 @@ exports.addEnqForm = async (req, res) => {
                                             "investment_unit": data.investment_unit,
                                             "units_acquired": data.investment_unit,
                                             "units_transferred": 0,
-                                            "units_balance": data.investment_unit
+                                            "units_balance": data.investment_unit,
+                                            "transaction_type": enq_form.transaction_type
                                         }
                                         transaction.push(temp)
                                     })
                                     console.log(transaction)
-                                    await Transaction.bulkCreate(temp).then(() => {
+                                    await Transaction.bulkCreate(transaction).then(() => {
                                         return res.status(200).json({
                                             message: "order place successfully",
                                             resp
@@ -322,7 +323,8 @@ exports.addEnqForm = async (req, res) => {
                                 "investment_unit": resp.investment_unit,
                                 "units_acquired": resp.investment_unit,
                                 "units_transferred": 0,
-                                "units_balance": resp.investment_unit
+                                "units_balance": resp.investment_unit,
+                                "transaction_type": enq_form.transaction_type
                             }
                             await Transaction.create(temp).then(() => {
                                 return res.status(200).json({
@@ -546,7 +548,8 @@ exports.updateEnqForm = async (req, res) => {
                                     "investment_unit": data.investment_unit,
                                     "units_acquired": data.investment_unit,
                                     "units_transferred": 0,
-                                    "units_balance": data.investment_unit
+                                    "units_balance": data.investment_unit,
+                                    "transaction_type": enq_form.transaction_type
                                 }
                                 transaction.push(temp)
                             })
@@ -596,7 +599,8 @@ exports.updateEnqForm = async (req, res) => {
                         "investment_unit": resp.investment_unit,
                         "units_acquired": resp.investment_unit,
                         "units_transferred": 0,
-                        "units_balance": resp.investment_unit
+                        "units_balance": resp.investment_unit,
+                        "transaction_type": enq_form.transaction_type
                     }
                     await Transaction.create(temp).then(() => {
                         return res.status(200).json({

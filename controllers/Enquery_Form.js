@@ -11,14 +11,15 @@ const { multipleAccount } = require('../service/azureEmail')
 
 // get all form
 exports.getAllOrder = async (req, res) => {
+
     try {
         var getOrder
         if (req.body.client_id != null && req.body.prop_id == null) {
-            getOrder = await Order.findAndCountAll({
+            getOrder = await Order.findAll({
                 where: {
                     client_id: req.body.client_id
                 },
-                order: [['createdAt', 'DESC']],
+
                 include: [
                     {
                         model: model.Property,
@@ -32,15 +33,15 @@ exports.getAllOrder = async (req, res) => {
                         model: model.Enquiry_form,
                         as: 'enq_form_data'
                     }
-                ]
+                ],
+                order: [['createdAt', 'DESC']],
             })
         } else if (req.body.client_id != null && req.body.prop_id != null) {
-            getOrder = await Order.findAndCountAll({
+            getOrder = await Order.findAll({
                 where: {
                     client_id: req.body.client_id,
                     prop_id: req.body.prop_id,
                 },
-                order: [['createdAt', 'DESC']],
                 include: [
                     {
                         model: model.Property,
@@ -54,11 +55,11 @@ exports.getAllOrder = async (req, res) => {
                         model: model.Enquiry_form,
                         as: 'enq_form_data'
                     }
-                ]
+                ],
+                order: [['createdAt', 'DESC']],
             })
         } else {
-            getOrder = await Order.findAndCountAll({
-                order: [['createdAt', 'DESC']],
+            getOrder = await Order.findAll({
                 include: [
                     {
                         model: model.Property,
@@ -72,7 +73,8 @@ exports.getAllOrder = async (req, res) => {
                         model: model.Enquiry_form,
                         as: 'enq_form_data'
                     }
-                ]
+                ],
+                order: [['createdAt', 'DESC']],
             })
         }
         if (!getOrder) {
@@ -865,8 +867,8 @@ exports.getTransaction = async (req, res) => {
                                                                 JOIN nexa_capital.client ON transaction.client_id = nexa_capital.client.id
                                                                 JOIN nexa_capital.order ON transaction.order_id = nexa_capital.order.id
                                                                 JOIN nexa_capital.property ON transaction.prop_id = nexa_capital.property.id
-                                                                WHERE nexa_capital.order.order_id =${req.body.order_id} and 
-                                                                nexa_capital.order.holder_type="self" ORDER BY nexa_capital.transaction.createdAt DESC;`)
+                                                                WHERE nexa_capital.order.order_id =${req.body.order_id} 
+                                                                 ORDER BY nexa_capital.transaction.createdAt DESC;`)
         } else if (req.body.form_type === "Individual") {
             get_transaction = await db.sequelize.query(`SELECT nexa_capital.transaction.*, nexa_capital.client.full_name, nexa_capital.order.order_id, 
                                                                 nexa_capital.property.property_name
@@ -875,6 +877,8 @@ exports.getTransaction = async (req, res) => {
                                                                 JOIN nexa_capital.order ON transaction.order_id = nexa_capital.order.id
                                                                 JOIN nexa_capital.property ON transaction.prop_id = nexa_capital.property.id
                                                                 WHERE nexa_capital.order.order_id =${req.body.order_id}
+                                                                and 
+                                                                nexa_capital.order.holder_type="self"
                                                                 ORDER BY nexa_capital.transaction.createdAt DESC;`)
         } else {
             console.log('3')

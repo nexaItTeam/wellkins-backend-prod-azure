@@ -273,7 +273,7 @@ exports.addEnqForm = async (req, res) => {
                                             "units_acquired": data.investment_unit,
                                             "units_transferred": 0,
                                             "units_balance": data.investment_unit,
-                                            "transaction_type": enq_form.transaction_type
+                                            "transaction_status": enq_form.transaction_status
                                         }
                                         transaction.push(temp)
                                     })
@@ -324,7 +324,7 @@ exports.addEnqForm = async (req, res) => {
                                 "units_acquired": resp.investment_unit,
                                 "units_transferred": 0,
                                 "units_balance": resp.investment_unit,
-                                "transaction_type": enq_form.transaction_type
+                                "transaction_status": enq_form.transaction_status
                             }
                             await Transaction.create(temp).then(() => {
                                 return res.status(200).json({
@@ -549,7 +549,7 @@ exports.updateEnqForm = async (req, res) => {
                                     "units_acquired": data.investment_unit,
                                     "units_transferred": 0,
                                     "units_balance": data.investment_unit,
-                                    "transaction_type": enq_form.transaction_type
+                                    "transaction_status": enq_form.transaction_status
                                 }
                                 transaction.push(temp)
                             })
@@ -600,7 +600,7 @@ exports.updateEnqForm = async (req, res) => {
                         "units_acquired": resp.investment_unit,
                         "units_transferred": 0,
                         "units_balance": resp.investment_unit,
-                        "transaction_type": enq_form.transaction_type
+                        "transaction_status": enq_form.transaction_status
                     }
                     await Transaction.create(temp).then(() => {
                         return res.status(200).json({

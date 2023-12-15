@@ -274,12 +274,13 @@ exports.addEnqForm = async (req, res) => {
                                             "investment_unit": data.investment_unit,
                                             "units_acquired": data.investment_unit,
                                             "units_transferred": 0,
-                                            "units_balance": data.investment_unit
+                                            "units_balance": data.investment_unit,
+                                            "transaction_status": enq_form.transaction_status
                                         }
                                         transaction.push(temp)
                                     })
                                     console.log(transaction)
-                                    await Transaction.bulkCreate(temp).then(() => {
+                                    await Transaction.bulkCreate(transaction).then(() => {
                                         return res.status(200).json({
                                             message: "order place successfully",
                                             resp
@@ -324,7 +325,8 @@ exports.addEnqForm = async (req, res) => {
                                 "investment_unit": resp.investment_unit,
                                 "units_acquired": resp.investment_unit,
                                 "units_transferred": 0,
-                                "units_balance": resp.investment_unit
+                                "units_balance": resp.investment_unit,
+                                "transaction_status": enq_form.transaction_status
                             }
                             await Transaction.create(temp).then(() => {
                                 return res.status(200).json({
@@ -470,15 +472,17 @@ exports.updateEnqForm = async (req, res) => {
                 await Client.bulkCreate(payload).then(async (resp) => {
                     await multipleAccount(emails).then(async () => {
                         let order_payload = []
+                        const order_id1 = generateUniqueId({
+                            length: 8,
+                            useLetters: false
+                        })
                         resp.forEach(data => {
-                            const order_id = generateUniqueId({
-                                length: 8,
-                                useLetters: false
-                            })
+                           
+                           
                             var temp = {
                                 investment_unit: enq_form.investment_unit,
                                 client_id: data.id,
-                                order_id: enq_form.prop_id + order_id,
+                                order_id: enq_form.prop_id + order_id1,
                                 holder_type: "joint",
                                 enq_form_id: enq_form.id || enq_resp.id,
                                 prop_id: enq_form.prop_id,
@@ -487,16 +491,14 @@ exports.updateEnqForm = async (req, res) => {
                                 paidStatus: enq_form.paidStatus
                             }
                             order_payload.push(temp)
+                            console.log("temp",order_payload)
                         })
-                        const order_id = generateUniqueId({
-                            length: 8,
-                            useLetters: false
-                        })
+                       
                         const main_holder = {
                             investment_unit: enq_form.investment_unit,
                             client_id: enq_form.client_id,
                             holder_type: "self",
-                            order_id: enq_form.prop_id + order_id,
+                            order_id: enq_form.prop_id + order_id1,
                             enq_form_id: enq_form.id || enq_resp.id,
                             prop_id: enq_form.prop_id,
                             paidStatus: enq_form.paidStatus,
@@ -523,7 +525,7 @@ exports.updateEnqForm = async (req, res) => {
                                     investment_unit: enq_form.investment_unit,
                                     client_id: client.id,
                                     holder_type: "joint",
-                                    order_id: enq_form.prop_id + order_id,
+                                    order_id: enq_form.prop_id + order_id1,
                                     enq_form_id: enq_form.id || enq_resp.id,
                                     prop_id: enq_form.prop_id,
                                     paidStatus: enq_form.paidStatus,
@@ -531,9 +533,11 @@ exports.updateEnqForm = async (req, res) => {
                                     paidStatus: enq_form.paidStatus
                                 }
                                 order_payload.push(joint_holder)
+                                console.log(order_payload)
                             }
                         }
                         // order create
+                        console.log("xxxx",order_payload)
                         await Order.bulkCreate(order_payload).then(async (resp) => {
                             console.log("4", resp)
                             // create transaction
@@ -548,7 +552,8 @@ exports.updateEnqForm = async (req, res) => {
                                     "investment_unit": data.investment_unit,
                                     "units_acquired": data.investment_unit,
                                     "units_transferred": 0,
-                                    "units_balance": data.investment_unit
+                                    "units_balance": data.investment_unit,
+                                    "transaction_status": enq_form.transaction_status
                                 }
                                 transaction.push(temp)
                             })
@@ -598,7 +603,8 @@ exports.updateEnqForm = async (req, res) => {
                         "investment_unit": resp.investment_unit,
                         "units_acquired": resp.investment_unit,
                         "units_transferred": 0,
-                        "units_balance": resp.investment_unit
+                        "units_balance": resp.investment_unit,
+                        "transaction_status": enq_form.transaction_status
                     }
                     await Transaction.create(temp).then(() => {
                         return res.status(200).json({

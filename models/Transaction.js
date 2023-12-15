@@ -79,6 +79,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             field: 'amount_unpaid'
         },
+        transaction_status: {
+            type: DataTypes.STRING,
+            field: 'transaction_status',
+        }
     }, {
         sequelize,
         tableName: 'transaction',

@@ -57,6 +57,10 @@ module.exports = (sequelize, DataTypes) => {
         client_type: {
             type: DataTypes.INTEGER,
             field: 'client_type'
+        },
+        client_image: {
+            type: DataTypes.STRING,
+            field: 'client_image'
         }
     }, {
         sequelize,

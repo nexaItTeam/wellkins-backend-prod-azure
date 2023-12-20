@@ -182,6 +182,8 @@ exports.clientLogin = async (req, res) => {
 
 exports.getClient = async (req, res) => {
     try {
+        console.log(req.body.id)
+       if(req.body.id == null){
         var getClient = await Client.findAndCountAll({
             where: {
                 isDelete: false,
@@ -191,7 +193,14 @@ exports.getClient = async (req, res) => {
             limit: req.body.limit,
             offset: req.body.offset
         })
-
+    }else{
+        var getClient = await Client.findOne({
+            where: {
+                id: req.body.id,
+                client_email:req.body.client_email
+            }
+        })
+    }
         if (!getClient) {
             return res.status(404).json({
                 message: "Something went wrong"
@@ -203,6 +212,7 @@ exports.getClient = async (req, res) => {
             })
         }
     } catch (error) {
+        console.log(error)
         res.status(500).json({
             message: "Server Error",
             error

@@ -238,7 +238,7 @@ exports.addPropImg = async (req, res) => {
     try {
         const id = parseInt(req.params.id)
         const file = req.file
-        await azureUpload(file).then(async (resp) => {
+        await azureUpload(file,null).then(async (resp) => {
             var temp = {
                 "prop_id": id,
                 "property_img": `property/${file.originalname}`,

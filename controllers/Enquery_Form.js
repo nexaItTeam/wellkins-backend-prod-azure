@@ -673,11 +673,11 @@ exports.uploadeDocument = async (req, res) => {
         const docs_type = req.body.docs_type
         const file = req.file
         console.log("file", file, id, docs_type)
-        await azureUpload(file).then(async (_) => {
+        await azureUpload(file,id).then(async (_) => {
             var temp = {
                 "client_id": id,
                 "docs_type": docs_type,
-                "docs_img": `document/${file.originalname}`
+                "docs_img": `document/${id}${file.originalname}`
             }
             var upload_img = await Document.create(temp)
             res.status(200).json({
